@@ -27,7 +27,7 @@
     ```sh
     npm run dev
     ```
-6. prisma studio :
+6. prisma studio (optional) :
 
     ```sh
     npx prisma studio 
