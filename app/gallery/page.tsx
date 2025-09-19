@@ -11,19 +11,19 @@ import { Camera, Filter, Star } from "lucide-react"
 interface GalleryItem {
   id: number
   title: string
-  description: string
-  image_url: string
+  description: string | null
+  imageUrl: string
   category: string
-  is_featured: boolean
+  isFeatured: boolean
 }
 
 const categories = [
   { value: "all", label: "All Photos" },
-  { value: "kitesurfing", label: "Kitesurfing" },
-  { value: "kite_buggy", label: "Kite Buggy" },
-  { value: "kite_landboard", label: "Landboarding" },
-  { value: "paddleboard", label: "Paddleboard" },
-  { value: "clients", label: "Happy Clients" },
+  { value: "KITESURFING", label: "Kitesurfing" },
+  { value: "KITE_BUGGY", label: "Kite Buggy" },
+  { value: "KITE_LANDBOARD", label: "Landboarding" },
+  { value: "PADDLEBOARD", label: "Paddleboard" },
+  { value: "CLIENTS", label: "Happy Clients" },
 ]
 
 export default function GalleryPage() {
@@ -137,12 +137,12 @@ export default function GalleryPage() {
                     <div className="group cursor-pointer space-y-2">
                       <div className="relative overflow-hidden rounded-lg bg-muted">
                         <img
-                          src={item.image_url || "/placeholder.svg?height=300&width=300"}
+                          src={item.imageUrl || "/placeholder.svg?height=300&width=300"}
                           alt={item.title}
                           className="w-full aspect-square object-cover group-hover:scale-105 transition-transform duration-300"
                         />
                         <div className="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-colors duration-300" />
-                        {item.is_featured && (
+                        {item.isFeatured && (
                           <div className="absolute top-2 right-2">
                             <Badge variant="secondary" className="bg-yellow-500/90 text-white">
                               <Star className="h-3 w-3 mr-1" />
@@ -167,7 +167,7 @@ export default function GalleryPage() {
                   <DialogContent className="max-w-4xl">
                     <div className="space-y-4">
                       <img
-                        src={item.image_url || "/placeholder.svg?height=600&width=800"}
+                        src={item.imageUrl || "/placeholder.svg?height=600&width=800"}
                         alt={item.title}
                         className="w-full max-h-[70vh] object-contain rounded-lg"
                       />

@@ -7,7 +7,7 @@ export async function GET(request: Request) {
     const category = searchParams.get("category")
 
     const gallery = await prisma.gallery.findMany({
-      where: category && category !== "all" ? { category: category.toUpperCase() as any } : {},
+      where: category && category !== "all" ? { category: category as any } : {},
       orderBy: [{ isFeatured: "desc" }, { createdAt: "desc" }],
     })
 

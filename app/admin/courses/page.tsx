@@ -26,7 +26,7 @@ import {
 } from "@/components/ui/dialog"
 import { Skeleton } from "@/components/ui/skeleton"
 import { useToast } from "@/hooks/use-toast"
-import { BookOpen, Plus, Edit, Trash2, Clock, Users, Eye, ToggleLeft, ToggleRight, Search, Filter, Download, Star, CheckCircle, XCircle, Calendar, Euro } from "lucide-react"
+import { BookOpen, Plus, Edit, Trash2, Clock, Users, Eye, ToggleLeft, ToggleRight, Search, Filter, Download, Star, CheckCircle, XCircle, Calendar, Euro, Upload, X } from "lucide-react"
 
 interface Course {
   id: number
@@ -64,10 +64,54 @@ export default function AdminCoursesPage() {
     image_url: "",
     is_active: true,
   })
+  const [selectedFile, setSelectedFile] = useState<File | null>(null)
+  const [imagePreview, setImagePreview] = useState<string | null>(null)
+  const [isUploading, setIsUploading] = useState(false)
 
   useEffect(() => {
     fetchCourses()
   }, [])
+
+  const handleFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0]
+    if (file) {
+      // Validate file type
+      const allowedTypes = ["image/jpeg", "image/jpg", "image/png", "image/webp"]
+      if (!allowedTypes.includes(file.type)) {
+        toast({
+          title: "Invalid file type",
+          description: "Please select a JPEG, PNG, or WebP image file.",
+          variant: "destructive",
+        })
+        return
+      }
+
+      // Validate file size (max 10MB)
+      const maxSize = 10 * 1024 * 1024 // 10MB
+      if (file.size > maxSize) {
+        toast({
+          title: "File too large",
+          description: "Please select an image smaller than 10MB.",
+          variant: "destructive",
+        })
+        return
+      }
+
+      setSelectedFile(file)
+      
+      // Create preview URL
+      const previewUrl = URL.createObjectURL(file)
+      setImagePreview(previewUrl)
+    }
+  }
+
+  const removeSelectedFile = () => {
+    if (imagePreview) {
+      URL.revokeObjectURL(imagePreview)
+    }
+    setSelectedFile(null)
+    setImagePreview(null)
+  }
 
   const fetchCourses = async () => {
     try {
@@ -90,14 +134,85 @@ export default function AdminCoursesPage() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
 
-    const courseData = {
-      ...formData,
-      price: Number.parseFloat(formData.price),
-      duration_hours: Number.parseInt(formData.duration_hours),
-      max_participants: Number.parseInt(formData.max_participants),
+    // If editing and no new file selected, use existing image URL
+    if (editingCourse && !selectedFile) {
+      try {
+        const courseData = {
+          ...formData,
+          price: Number.parseFloat(formData.price),
+          duration_hours: Number.parseInt(formData.duration_hours),
+          max_participants: Number.parseInt(formData.max_participants),
+        }
+
+        const url = `/api/admin/courses/${editingCourse.id}`
+        const response = await fetch(url, {
+          method: "PUT",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(courseData),
+        })
+
+        if (response.ok) {
+          toast({
+            title: "Succès",
+            description: "Cours modifié avec succès",
+          })
+          fetchCourses()
+          resetForm()
+          setIsDialogOpen(false)
+        }
+      } catch (error) {
+        toast({
+          title: "Erreur",
+          description: "Impossible de modifier le cours",
+          variant: "destructive",
+        })
+      }
+      return
     }
 
+    // If no file is selected for new course, show error
+    if (!editingCourse && !selectedFile) {
+      toast({
+        title: "Erreur",
+        description: "Veuillez sélectionner une image",
+        variant: "destructive",
+      })
+      return
+    }
+
+    setIsUploading(true)
+
     try {
+      let imageUrl = formData.image_url
+
+      // Upload file if selected
+      if (selectedFile) {
+        const uploadFormData = new FormData()
+        uploadFormData.append("file", selectedFile)
+
+        const uploadResponse = await fetch("/api/upload", {
+          method: "POST",
+          body: uploadFormData,
+        })
+
+        if (!uploadResponse.ok) {
+          const errorData = await uploadResponse.json()
+          throw new Error(errorData.error || "Upload failed")
+        }
+
+        const uploadData = await uploadResponse.json()
+        imageUrl = uploadData.url
+      }
+
+      const courseData = {
+        ...formData,
+        price: Number.parseFloat(formData.price),
+        duration_hours: Number.parseInt(formData.duration_hours),
+        max_participants: Number.parseInt(formData.max_participants),
+        image_url: imageUrl,
+      }
+
+      // Create or update course
       const url = editingCourse ? `/api/admin/courses/${editingCourse.id}` : "/api/admin/courses"
       const method = editingCourse ? "PUT" : "POST"
 
@@ -115,13 +230,18 @@ export default function AdminCoursesPage() {
         fetchCourses()
         resetForm()
         setIsDialogOpen(false)
+      } else {
+        const errorData = await response.json()
+        throw new Error(errorData.error || "Failed to save course")
       }
     } catch (error) {
       toast({
         title: "Erreur",
-        description: `Impossible de ${editingCourse ? "modifier" : "créer"} le cours`,
+        description: error instanceof Error ? error.message : `Impossible de ${editingCourse ? "modifier" : "créer"} le cours`,
         variant: "destructive",
       })
+    } finally {
+      setIsUploading(false)
     }
   }
 
@@ -136,6 +256,8 @@ export default function AdminCoursesPage() {
       image_url: course.imageUrl || "",
       is_active: course.isActive,
     })
+    setImagePreview(course.imageUrl)
+    setSelectedFile(null)
     setIsDialogOpen(true)
   }
 
@@ -202,6 +324,11 @@ export default function AdminCoursesPage() {
       is_active: true,
     })
     setEditingCourse(null)
+    setSelectedFile(null)
+    if (imagePreview) {
+      URL.revokeObjectURL(imagePreview)
+    }
+    setImagePreview(null)
   }
 
   const filteredCourses = courses.filter((course) => {
@@ -322,12 +449,54 @@ export default function AdminCoursesPage() {
                 </div>
               </div>
               <div>
-                <label className="text-sm font-medium">URL de l'image (optionnel)</label>
-                <Input
-                  value={formData.image_url}
-                  onChange={(e) => setFormData({ ...formData, image_url: e.target.value })}
-                  placeholder="https://example.com/image.jpg"
-                />
+                <label className="text-sm font-medium">
+                  {editingCourse ? "Remplacer l'image (optionnel)" : "Sélectionner une image"}
+                </label>
+                <div className="space-y-4">
+                  {imagePreview && (
+                    <div className="relative">
+                      <img
+                        src={imagePreview}
+                        alt="Preview"
+                        className="w-full h-48 object-cover rounded-lg border"
+                      />
+                      {selectedFile && (
+                        <Button
+                          type="button"
+                          variant="destructive"
+                          size="sm"
+                          className="absolute top-2 right-2"
+                          onClick={removeSelectedFile}
+                        >
+                          <X className="h-4 w-4" />
+                        </Button>
+                      )}
+                    </div>
+                  )}
+                  <div className="flex items-center gap-4">
+                    <Input
+                      type="file"
+                      accept="image/*"
+                      onChange={handleFileSelect}
+                      className="flex-1"
+                      id="course-image-upload"
+                    />
+                    <Button
+                      type="button"
+                      variant="outline"
+                      onClick={() => document.getElementById("course-image-upload")?.click()}
+                      className="flex items-center gap-2"
+                    >
+                      <Upload className="h-4 w-4" />
+                      Choisir un fichier
+                    </Button>
+                  </div>
+                  {selectedFile && (
+                    <p className="text-sm text-muted-foreground">
+                      Sélectionné: {selectedFile.name} ({(selectedFile.size / 1024 / 1024).toFixed(2)} MB)
+                    </p>
+                  )}
+                </div>
               </div>
               <div>
                 <label className="text-sm font-medium">Description</label>
@@ -350,8 +519,10 @@ export default function AdminCoursesPage() {
                 </label>
               </div>
               <div className="flex gap-2 pt-4">
-                <Button type="submit">{editingCourse ? "Modifier le cours" : "Créer le cours"}</Button>
-                <Button type="button" variant="outline" onClick={() => setIsDialogOpen(false)}>
+                <Button type="submit" disabled={isUploading}>
+                  {isUploading ? "Téléchargement..." : editingCourse ? "Modifier le cours" : "Créer le cours"}
+                </Button>
+                <Button type="button" variant="outline" onClick={() => setIsDialogOpen(false)} disabled={isUploading}>
                   Annuler
                 </Button>
               </div>

@@ -13,9 +13,9 @@ interface Activity {
   name: string
   description: string
   price: number
-  duration_hours: number
-  equipment_included: boolean
-  image_url: string
+  durationHours: number
+  equipmentIncluded: boolean
+  imageUrl: string | null
 }
 
 export default function ActivitiesPage() {
@@ -34,8 +34,10 @@ export default function ActivitiesPage() {
         throw new Error("Failed to fetch activities")
       }
       const data = await response.json()
+      console.log("Activities data:", data.activities) // Debug log
       setActivities(data.activities)
     } catch (err) {
+      console.error("Error fetching activities:", err) // Debug log
       setError("Unable to load activities")
     } finally {
       setLoading(false)
@@ -110,16 +112,20 @@ export default function ActivitiesPage() {
                 <Card key={activity.id} className="group hover:shadow-lg transition-shadow">
                   <div className="relative overflow-hidden rounded-t-lg">
                     <img
-                      src={activity.image_url || "/placeholder.svg?height=300&width=400"}
+                      src={activity.imageUrl || "/placeholder.svg?height=300&width=400"}
                       alt={activity.name}
                       className="w-full h-48 object-cover group-hover:scale-105 transition-transform duration-300"
+                      onError={(e) => {
+                        console.log("Image failed to load:", activity.imageUrl, "Activity:", activity.name)
+                        e.currentTarget.src = "/placeholder.svg?height=300&width=400"
+                      }}
                     />
                     <div className="absolute top-4 right-4">
                       <Badge variant="secondary" className="bg-background/90 text-foreground">
                         €{activity.price}
                       </Badge>
                     </div>
-                    {activity.equipment_included && (
+                    {activity.equipmentIncluded && (
                       <div className="absolute top-4 left-4">
                         <Badge variant="default" className="bg-primary/90 text-primary-foreground">
                           Equipment Included
@@ -144,10 +150,10 @@ export default function ActivitiesPage() {
                     <div className="flex items-center justify-between text-sm">
                       <div className="flex items-center gap-1 text-muted-foreground">
                         <Clock className="h-4 w-4" />
-                        <span>{activity.duration_hours}h duration</span>
+                        <span>{activity.durationHours}h duration</span>
                       </div>
                       <div className="flex items-center gap-1">
-                        {activity.equipment_included ? (
+                        {activity.equipmentIncluded ? (
                           <>
                             <CheckCircle className="h-4 w-4 text-green-600" />
                             <span className="text-green-600 text-sm">Equipment included</span>
