@@ -33,12 +33,12 @@ interface ActivityType {
   name: string
   description: string
   price: number
-  duration_hours: number
-  equipment_included: boolean
-  image_url: string | null
-  is_active: boolean
-  created_at: string
-  updated_at: string
+  durationHours: number
+  equipmentIncluded: boolean
+  imageUrl: string | null
+  isActive: boolean
+  createdAt: string
+  updatedAt: string
   _count?: {
     bookings: number
   }
@@ -130,10 +130,10 @@ export default function AdminActivitiesPage() {
       name: activity.name,
       description: activity.description,
       price: activity.price.toString(),
-      duration_hours: activity.duration_hours.toString(),
-      equipment_included: activity.equipment_included,
-      image_url: activity.image_url || "",
-      is_active: activity.is_active,
+      duration_hours: activity.durationHours.toString(),
+      equipment_included: activity.equipmentIncluded,
+      image_url: activity.imageUrl || "",
+      is_active: activity.isActive,
     })
     setIsDialogOpen(true)
   }
@@ -209,16 +209,16 @@ export default function AdminActivitiesPage() {
       activity.description.toLowerCase().includes(searchTerm.toLowerCase())
     
     const matchesStatus = statusFilter === "all" || 
-      (statusFilter === "active" && activity.is_active) ||
-      (statusFilter === "inactive" && !activity.is_active)
+      (statusFilter === "active" && activity.isActive) ||
+      (statusFilter === "inactive" && !activity.isActive)
     
     return matchesSearch && matchesStatus
   })
 
   const stats = {
     total: activities.length,
-    active: activities.filter(a => a.is_active).length,
-    inactive: activities.filter(a => !a.is_active).length,
+    active: activities.filter(a => a.isActive).length,
+    inactive: activities.filter(a => !a.isActive).length,
     totalBookings: activities.reduce((sum, a) => sum + (a._count?.bookings || 0), 0),
     totalRevenue: activities.reduce((sum, a) => sum + (a.price * (a._count?.bookings || 0)), 0)
   }
@@ -231,9 +231,9 @@ export default function AdminActivitiesPage() {
         activity.name,
         activity.description,
         activity.price,
-        activity.duration_hours,
-        activity.equipment_included ? "Oui" : "Non",
-        activity.is_active ? "Actif" : "Inactif",
+        activity.durationHours,
+        activity.equipmentIncluded ? "Oui" : "Non",
+        activity.isActive ? "Actif" : "Inactif",
         activity._count?.bookings || 0,
         (activity.price * (activity._count?.bookings || 0)).toFixed(2)
       ])
@@ -467,7 +467,7 @@ export default function AdminActivitiesPage() {
               </Card>
             ))
           : filteredActivities.map((activity) => (
-              <Card key={activity.id} className={!activity.is_active ? "opacity-60" : ""}>
+              <Card key={activity.id} className={!activity.isActive ? "opacity-60" : ""}>
                 <CardHeader>
                   <div className="flex items-center justify-between">
                     <CardTitle className="flex items-center gap-2">
@@ -476,14 +476,14 @@ export default function AdminActivitiesPage() {
                     </CardTitle>
                     <div className="flex items-center gap-2">
                       <button
-                        onClick={() => toggleActivityStatus(activity.id, activity.is_active)}
+                        onClick={() => toggleActivityStatus(activity.id, activity.isActive)}
                         className={`px-2 py-1 rounded-full text-xs font-medium transition-colors hover:opacity-80 ${
-                          activity.is_active 
+                          activity.isActive 
                             ? "bg-green-100 text-green-800 hover:bg-green-200" 
                             : "bg-red-100 text-red-800 hover:bg-red-200"
                         }`}
                       >
-                        {activity.is_active ? "Active" : "Inactive"}
+                        {activity.isActive ? "Active" : "Inactive"}
                       </button>
                     </div>
                   </div>
@@ -494,9 +494,9 @@ export default function AdminActivitiesPage() {
                   <div className="flex flex-wrap items-center gap-2 sm:gap-4 text-sm text-muted-foreground mb-4">
                     <div className="flex items-center gap-1">
                       <Clock className="h-4 w-4" />
-                      {activity.duration_hours}h
+                      {activity.durationHours}h
                     </div>
-                    {activity.equipment_included && (
+                    {activity.equipmentIncluded && (
                       <div className="flex items-center gap-1">
                         <Package className="h-4 w-4" />
                         <span className="hidden sm:inline">Équipement inclus</span>
@@ -563,9 +563,9 @@ export default function AdminActivitiesPage() {
                   <div className="space-y-1 text-sm">
                     <div><strong>Nom:</strong> {selectedActivity.name}</div>
                     <div><strong>Prix:</strong> €{selectedActivity.price}</div>
-                    <div><strong>Durée:</strong> {selectedActivity.duration_hours} heures</div>
-                    <div><strong>Équipement inclus:</strong> {selectedActivity.equipment_included ? "Oui" : "Non"}</div>
-                    <div><strong>Statut:</strong> {selectedActivity.is_active ? "Active" : "Inactive"}</div>
+                    <div><strong>Durée:</strong> {selectedActivity.durationHours} heures</div>
+                    <div><strong>Équipement inclus:</strong> {selectedActivity.equipmentIncluded ? "Oui" : "Non"}</div>
+                    <div><strong>Statut:</strong> {selectedActivity.isActive ? "Active" : "Inactive"}</div>
                   </div>
                 </div>
                 <div>
@@ -573,8 +573,8 @@ export default function AdminActivitiesPage() {
                   <div className="space-y-1 text-sm">
                     <div><strong>Réservations:</strong> {selectedActivity._count?.bookings || 0}</div>
                     <div><strong>Revenus:</strong> €{((selectedActivity._count?.bookings || 0) * selectedActivity.price).toFixed(2)}</div>
-                    <div><strong>Créée le:</strong> {new Date(selectedActivity.created_at).toLocaleDateString('fr-FR')}</div>
-                    <div><strong>Modifiée le:</strong> {new Date(selectedActivity.updated_at).toLocaleDateString('fr-FR')}</div>
+                    <div><strong>Créée le:</strong> {new Date(selectedActivity.createdAt).toLocaleDateString('fr-FR')}</div>
+                    <div><strong>Modifiée le:</strong> {new Date(selectedActivity.updatedAt).toLocaleDateString('fr-FR')}</div>
                   </div>
                 </div>
               </div>
@@ -582,11 +582,11 @@ export default function AdminActivitiesPage() {
                 <h4 className="font-medium mb-2">Description</h4>
                 <p className="text-sm text-muted-foreground">{selectedActivity.description}</p>
               </div>
-              {selectedActivity.image_url && (
+              {selectedActivity.imageUrl && (
                 <div>
                   <h4 className="font-medium mb-2">Image</h4>
                   <img 
-                    src={selectedActivity.image_url} 
+                    src={selectedActivity.imageUrl} 
                     alt={selectedActivity.name}
                     className="w-full h-48 object-cover rounded-lg"
                   />

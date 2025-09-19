@@ -33,12 +33,12 @@ interface Course {
   name: string
   description: string
   price: number
-  duration_hours: number
-  max_participants: number
-  image_url: string | null
-  is_active: boolean
-  created_at: string
-  updated_at: string
+  durationHours: number
+  maxParticipants: number
+  imageUrl: string | null
+  isActive: boolean
+  createdAt: string
+  updatedAt: string
   _count?: {
     bookings: number
   }
@@ -131,10 +131,10 @@ export default function AdminCoursesPage() {
       name: course.name,
       description: course.description,
       price: course.price.toString(),
-      duration_hours: course.duration_hours.toString(),
-      max_participants: course.max_participants.toString(),
-      image_url: course.image_url || "",
-      is_active: course.is_active,
+      duration_hours: course.durationHours.toString(),
+      max_participants: course.maxParticipants.toString(),
+      image_url: course.imageUrl || "",
+      is_active: course.isActive,
     })
     setIsDialogOpen(true)
   }
@@ -210,16 +210,16 @@ export default function AdminCoursesPage() {
       course.description.toLowerCase().includes(searchTerm.toLowerCase())
     
     const matchesStatus = statusFilter === "all" || 
-      (statusFilter === "active" && course.is_active) ||
-      (statusFilter === "inactive" && !course.is_active)
+      (statusFilter === "active" && course.isActive) ||
+      (statusFilter === "inactive" && !course.isActive)
     
     return matchesSearch && matchesStatus
   })
 
   const stats = {
     total: courses.length,
-    active: courses.filter(c => c.is_active).length,
-    inactive: courses.filter(c => !c.is_active).length,
+    active: courses.filter(c => c.isActive).length,
+    inactive: courses.filter(c => !c.isActive).length,
     totalBookings: courses.reduce((sum, c) => sum + (c._count?.bookings || 0), 0),
     totalRevenue: courses.reduce((sum, c) => sum + (c.price * (c._count?.bookings || 0)), 0)
   }
@@ -232,9 +232,9 @@ export default function AdminCoursesPage() {
         course.name,
         course.description,
         course.price,
-        course.duration_hours,
-        course.max_participants,
-        course.is_active ? "Actif" : "Inactif",
+        course.durationHours,
+        course.maxParticipants,
+        course.isActive ? "Actif" : "Inactif",
         course._count?.bookings || 0,
         (course.price * (course._count?.bookings || 0)).toFixed(2)
       ])
@@ -468,7 +468,7 @@ export default function AdminCoursesPage() {
               </Card>
             ))
           : filteredCourses.map((course) => (
-              <Card key={course.id} className={!course.is_active ? "opacity-60" : ""}>
+              <Card key={course.id} className={!course.isActive ? "opacity-60" : ""}>
                 <CardHeader>
                   <div className="flex items-center justify-between">
                     <CardTitle className="flex items-center gap-2">
@@ -477,14 +477,14 @@ export default function AdminCoursesPage() {
                     </CardTitle>
                     <div className="flex items-center gap-2">
                       <button
-                        onClick={() => toggleCourseStatus(course.id, course.is_active)}
+                        onClick={() => toggleCourseStatus(course.id, course.isActive)}
                         className={`px-2 py-1 rounded-full text-xs font-medium transition-colors hover:opacity-80 ${
-                          course.is_active 
+                          course.isActive 
                             ? "bg-green-100 text-green-800 hover:bg-green-200" 
                             : "bg-red-100 text-red-800 hover:bg-red-200"
                         }`}
                       >
-                        {course.is_active ? "Actif" : "Inactif"}
+                        {course.isActive ? "Actif" : "Inactif"}
                       </button>
                     </div>
                   </div>
@@ -495,12 +495,12 @@ export default function AdminCoursesPage() {
                   <div className="flex flex-wrap items-center gap-2 sm:gap-4 text-sm text-muted-foreground mb-4">
                     <div className="flex items-center gap-1">
                       <Clock className="h-4 w-4" />
-                      {course.duration_hours}h
+                      {course.durationHours}h
                     </div>
                     <div className="flex items-center gap-1">
                       <Users className="h-4 w-4" />
-                      <span className="hidden sm:inline">Max {course.max_participants}</span>
-                      <span className="sm:hidden">Max {course.max_participants}</span>
+                      <span className="hidden sm:inline">Max {course.maxParticipants}</span>
+                      <span className="sm:hidden">Max {course.maxParticipants}</span>
                     </div>
                     <div className="flex items-center gap-1">
                       <Calendar className="h-4 w-4" />
@@ -562,9 +562,9 @@ export default function AdminCoursesPage() {
                   <div className="space-y-1 text-sm">
                     <div><strong>Nom:</strong> {selectedCourse.name}</div>
                     <div><strong>Prix:</strong> €{selectedCourse.price}</div>
-                    <div><strong>Durée:</strong> {selectedCourse.duration_hours} heures</div>
-                    <div><strong>Participants max:</strong> {selectedCourse.max_participants}</div>
-                    <div><strong>Statut:</strong> {selectedCourse.is_active ? "Actif" : "Inactif"}</div>
+                    <div><strong>Durée:</strong> {selectedCourse.durationHours} heures</div>
+                    <div><strong>Participants max:</strong> {selectedCourse.maxParticipants}</div>
+                    <div><strong>Statut:</strong> {selectedCourse.isActive ? "Actif" : "Inactif"}</div>
                   </div>
                 </div>
                 <div>
@@ -572,8 +572,8 @@ export default function AdminCoursesPage() {
                   <div className="space-y-1 text-sm">
                     <div><strong>Réservations:</strong> {selectedCourse._count?.bookings || 0}</div>
                     <div><strong>Revenus:</strong> €{((selectedCourse._count?.bookings || 0) * selectedCourse.price).toFixed(2)}</div>
-                    <div><strong>Créé le:</strong> {new Date(selectedCourse.created_at).toLocaleDateString('fr-FR')}</div>
-                    <div><strong>Modifié le:</strong> {new Date(selectedCourse.updated_at).toLocaleDateString('fr-FR')}</div>
+                    <div><strong>Créé le:</strong> {new Date(selectedCourse.createdAt).toLocaleDateString('fr-FR')}</div>
+                    <div><strong>Modifié le:</strong> {new Date(selectedCourse.updatedAt).toLocaleDateString('fr-FR')}</div>
                   </div>
                 </div>
               </div>
@@ -581,11 +581,11 @@ export default function AdminCoursesPage() {
                 <h4 className="font-medium mb-2">Description</h4>
                 <p className="text-sm text-muted-foreground">{selectedCourse.description}</p>
               </div>
-              {selectedCourse.image_url && (
+              {selectedCourse.imageUrl && (
                 <div>
                   <h4 className="font-medium mb-2">Image</h4>
                   <img 
-                    src={selectedCourse.image_url} 
+                    src={selectedCourse.imageUrl} 
                     alt={selectedCourse.name}
                     className="w-full h-48 object-cover rounded-lg"
                   />
