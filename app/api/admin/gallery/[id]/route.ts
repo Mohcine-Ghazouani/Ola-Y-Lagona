@@ -22,13 +22,27 @@ export async function PUT(request: NextRequest, { params }: { params: { id: stri
       return NextResponse.json({ error: "Missing required fields" }, { status: 400 })
     }
 
+    // Map category names to database enum values
+    const categoryMap: { [key: string]: string } = {
+      'kitesurfing': 'KITESURFING',
+      'kite-buggy': 'KITE_BUGGY',
+      'kite-landboard': 'KITE_LANDBOARD',
+      'paddleboard': 'PADDLEBOARD',
+      'clients': 'CLIENTS'
+    }
+
+    const mappedCategory = categoryMap[category.toLowerCase()]
+    if (!mappedCategory) {
+      return NextResponse.json({ error: "Invalid category" }, { status: 400 })
+    }
+
     await prisma.gallery.update({
       where: { id: galleryId },
       data: {
         title,
         description: description || null,
         imageUrl: image_url,
-        category: category.toUpperCase() as any,
+        category: mappedCategory as any,
         isFeatured: Boolean(is_featured),
       },
     })

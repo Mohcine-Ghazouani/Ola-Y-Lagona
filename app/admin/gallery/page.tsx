@@ -19,16 +19,16 @@ import {
 } from "@/components/ui/dialog"
 import { Skeleton } from "@/components/ui/skeleton"
 import { useToast } from "@/hooks/use-toast"
-import { Plus, Edit, Trash2, Star, Download } from "lucide-react"
+import { Plus, Edit, Trash2, Star, Download, Upload, X } from "lucide-react"
 
 interface GalleryItem {
   id: number
   title: string
   description: string | null
-  image_url: string
+  imageUrl: string
   category: string
-  is_featured: boolean
-  created_at: string
+  isFeatured: boolean
+  createdAt: string
 }
 
 export default function AdminGalleryPage() {
@@ -41,16 +41,60 @@ export default function AdminGalleryPage() {
   const [formData, setFormData] = useState({
     title: "",
     description: "",
-    image_url: "",
+    imageUrl: "",
     category: "",
-    is_featured: false,
+    isFeatured: false,
   })
+  const [selectedFile, setSelectedFile] = useState<File | null>(null)
+  const [imagePreview, setImagePreview] = useState<string | null>(null)
+  const [isUploading, setIsUploading] = useState(false)
 
-  const categories = ["kitesurfing", "kite-buggy", "kite-landboard", "paddleboard", "general"]
+  const categories = ["kitesurfing", "kite-buggy", "kite-landboard", "paddleboard", "clients"]
 
   useEffect(() => {
     fetchGalleryItems()
   }, [])
+
+  const handleFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0]
+    if (file) {
+      // Validate file type
+      const allowedTypes = ["image/jpeg", "image/jpg", "image/png", "image/webp"]
+      if (!allowedTypes.includes(file.type)) {
+        toast({
+          title: "Invalid file type",
+          description: "Please select a JPEG, PNG, or WebP image file.",
+          variant: "destructive",
+        })
+        return
+      }
+
+      // Validate file size (max 10MB)
+      const maxSize = 10 * 1024 * 1024 // 10MB
+      if (file.size > maxSize) {
+        toast({
+          title: "File too large",
+          description: "Please select an image smaller than 10MB.",
+          variant: "destructive",
+        })
+        return
+      }
+
+      setSelectedFile(file)
+      
+      // Create preview URL
+      const previewUrl = URL.createObjectURL(file)
+      setImagePreview(previewUrl)
+    }
+  }
+
+  const removeSelectedFile = () => {
+    if (imagePreview) {
+      URL.revokeObjectURL(imagePreview)
+    }
+    setSelectedFile(null)
+    setImagePreview(null)
+  }
 
   const fetchGalleryItems = async () => {
     try {
@@ -73,14 +117,80 @@ export default function AdminGalleryPage() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
 
+    // If editing and no new file selected, use existing image URL
+    if (editingItem && !selectedFile) {
+      try {
+        const url = `/api/admin/gallery/${editingItem.id}`
+        const response = await fetch(url, {
+          method: "PUT",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(formData),
+        })
+
+        if (response.ok) {
+          toast({
+            title: "Success",
+            description: "Gallery item updated successfully",
+          })
+          fetchGalleryItems()
+          resetForm()
+          setIsDialogOpen(false)
+        }
+      } catch (error) {
+        toast({
+          title: "Error",
+          description: "Failed to update gallery item",
+          variant: "destructive",
+        })
+      }
+      return
+    }
+
+    // If no file is selected for new item, show error
+    if (!editingItem && !selectedFile) {
+      toast({
+        title: "Error",
+        description: "Please select an image file",
+        variant: "destructive",
+      })
+      return
+    }
+
+    setIsUploading(true)
+
     try {
+      let imageUrl = formData.imageUrl
+
+      // Upload file if selected
+      if (selectedFile) {
+        const uploadFormData = new FormData()
+        uploadFormData.append("file", selectedFile)
+
+        const uploadResponse = await fetch("/api/upload", {
+          method: "POST",
+          body: uploadFormData,
+        })
+
+        if (!uploadResponse.ok) {
+          const errorData = await uploadResponse.json()
+          throw new Error(errorData.error || "Upload failed")
+        }
+
+        const uploadData = await uploadResponse.json()
+        imageUrl = uploadData.url
+      }
+
+      // Create or update gallery item
       const url = editingItem ? `/api/admin/gallery/${editingItem.id}` : "/api/admin/gallery"
       const method = editingItem ? "PUT" : "POST"
 
       const response = await fetch(url, {
         method,
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(formData),
+        body: JSON.stringify({
+          ...formData,
+          image_url: imageUrl,
+        }),
       })
 
       if (response.ok) {
@@ -91,25 +201,43 @@ export default function AdminGalleryPage() {
         fetchGalleryItems()
         resetForm()
         setIsDialogOpen(false)
+      } else {
+        const errorData = await response.json()
+        throw new Error(errorData.error || "Failed to save gallery item")
       }
     } catch (error) {
       toast({
         title: "Error",
-        description: `Failed to ${editingItem ? "update" : "create"} gallery item`,
+        description: error instanceof Error ? error.message : `Failed to ${editingItem ? "update" : "create"} gallery item`,
         variant: "destructive",
       })
+    } finally {
+      setIsUploading(false)
     }
   }
 
   const handleEdit = (item: GalleryItem) => {
+    // Map database category back to frontend category
+    const categoryMap: { [key: string]: string } = {
+      'KITESURFING': 'kitesurfing',
+      'KITE_BUGGY': 'kite-buggy',
+      'KITE_LANDBOARD': 'kite-landboard',
+      'PADDLEBOARD': 'paddleboard',
+      'CLIENTS': 'clients'
+    }
+
+    const frontendCategory = categoryMap[item.category] || item.category.toLowerCase()
+
     setEditingItem(item)
     setFormData({
       title: item.title,
       description: item.description || "",
-      image_url: item.image_url,
-      category: item.category,
-      is_featured: item.is_featured,
+      imageUrl: item.imageUrl,
+      category: frontendCategory,
+      isFeatured: item.isFeatured,
     })
+    setImagePreview(item.imageUrl)
+    setSelectedFile(null)
     setIsDialogOpen(true)
   }
 
@@ -141,11 +269,16 @@ export default function AdminGalleryPage() {
     setFormData({
       title: "",
       description: "",
-      image_url: "",
+      imageUrl: "",
       category: "",
-      is_featured: false,
+      isFeatured: false,
     })
     setEditingItem(null)
+    setSelectedFile(null)
+    if (imagePreview) {
+      URL.revokeObjectURL(imagePreview)
+    }
+    setImagePreview(null)
   }
 
   const exportGallery = () => {
@@ -156,8 +289,8 @@ export default function AdminGalleryPage() {
         item.title,
         item.description || "",
         item.category,
-        item.is_featured ? "Yes" : "No",
-        new Date(item.created_at).toLocaleDateString()
+        item.isFeatured ? "Yes" : "No",
+        new Date(item.createdAt).toLocaleDateString()
       ])
     ].map(row => row.join(",")).join("\n")
 
@@ -229,13 +362,54 @@ export default function AdminGalleryPage() {
                 </div>
               </div>
               <div>
-                <label className="text-sm font-medium">Image URL</label>
-                <Input
-                  value={formData.image_url}
-                  onChange={(e) => setFormData({ ...formData, image_url: e.target.value })}
-                  placeholder="https://example.com/image.jpg"
-                  required
-                />
+                <label className="text-sm font-medium">
+                  {editingItem ? "Replace Image (optional)" : "Select Image"}
+                </label>
+                <div className="space-y-4">
+                  {imagePreview && (
+                    <div className="relative">
+                      <img
+                        src={imagePreview}
+                        alt="Preview"
+                        className="w-full h-48 object-cover rounded-lg border"
+                      />
+                      {selectedFile && (
+                        <Button
+                          type="button"
+                          variant="destructive"
+                          size="sm"
+                          className="absolute top-2 right-2"
+                          onClick={removeSelectedFile}
+                        >
+                          <X className="h-4 w-4" />
+                        </Button>
+                      )}
+                    </div>
+                  )}
+                  <div className="flex items-center gap-4">
+                    <Input
+                      type="file"
+                      accept="image/*"
+                      onChange={handleFileSelect}
+                      className="flex-1"
+                      id="image-upload"
+                    />
+                    <Button
+                      type="button"
+                      variant="outline"
+                      onClick={() => document.getElementById("image-upload")?.click()}
+                      className="flex items-center gap-2"
+                    >
+                      <Upload className="h-4 w-4" />
+                      Choose File
+                    </Button>
+                  </div>
+                  {selectedFile && (
+                    <p className="text-sm text-muted-foreground">
+                      Selected: {selectedFile.name} ({(selectedFile.size / 1024 / 1024).toFixed(2)} MB)
+                    </p>
+                  )}
+                </div>
               </div>
               <div>
                 <label className="text-sm font-medium">Description (optional)</label>
@@ -249,16 +423,18 @@ export default function AdminGalleryPage() {
               <div className="flex items-center space-x-2">
                 <Checkbox
                   id="featured"
-                  checked={formData.is_featured}
-                  onCheckedChange={(checked) => setFormData({ ...formData, is_featured: checked as boolean })}
+                  checked={formData.isFeatured}
+                  onCheckedChange={(checked) => setFormData({ ...formData, isFeatured: checked as boolean })}
                 />
                 <label htmlFor="featured" className="text-sm font-medium">
                   Featured Image
                 </label>
               </div>
               <div className="flex gap-2 pt-4">
-                <Button type="submit">{editingItem ? "Update Image" : "Add Image"}</Button>
-                <Button type="button" variant="outline" onClick={() => setIsDialogOpen(false)}>
+                <Button type="submit" disabled={isUploading}>
+                  {isUploading ? "Uploading..." : editingItem ? "Update Image" : "Add Image"}
+                </Button>
+                <Button type="button" variant="outline" onClick={() => setIsDialogOpen(false)} disabled={isUploading}>
                   Cancel
                 </Button>
               </div>
@@ -289,11 +465,11 @@ export default function AdminGalleryPage() {
               <Card key={item.id} className="overflow-hidden">
                 <CardHeader className="p-0 relative">
                   <img
-                    src={item.image_url || "/placeholder.svg"}
+                    src={item.imageUrl || "/placeholder.svg"}
                     alt={item.title}
                     className="h-48 w-full object-cover"
                   />
-                  {item.is_featured && (
+                  {item.isFeatured && (
                     <div className="absolute top-2 right-2 bg-yellow-500 text-white p-1 rounded-full">
                       <Star className="h-4 w-4" />
                     </div>

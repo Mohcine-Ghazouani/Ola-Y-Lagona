@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { Wind, Thermometer, Eye, Droplets } from "lucide-react"
+import { Wind, Thermometer, Eye, Droplets, RefreshCw } from "lucide-react"
 
 interface WeatherData {
   temperature: number
@@ -11,39 +11,46 @@ interface WeatherData {
   humidity: number
   visibility: number
   description: string
+  isDemo?: boolean
+  error?: string
 }
 
 export function WeatherWidget() {
   const [weather, setWeather] = useState<WeatherData | null>(null)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
+  const [refreshing, setRefreshing] = useState(false)
 
   useEffect(() => {
     fetchWeather()
+    
+    // Auto-refresh every 5 minutes
+    const interval = setInterval(fetchWeather, 5 * 60 * 1000)
+    
+    return () => clearInterval(interval)
   }, [])
 
-  const fetchWeather = async () => {
+  const fetchWeather = async (isManualRefresh = false) => {
     try {
-      // Using OpenWeatherMap API for Dakhla, Morocco
-      const API_KEY = process.env.NEXT_PUBLIC_WEATHER_API_KEY || "demo-key"
-      const response = await fetch(
-        `https://api.openweathermap.org/data/2.5/weather?q=Dakhla,MA&appid=${API_KEY}&units=metric`,
-      )
+      if (isManualRefresh) {
+        setRefreshing(true)
+      } else {
+        setLoading(true)
+      }
+      
+      const response = await fetch("/api/weather")
 
       if (!response.ok) {
         throw new Error("Weather data unavailable")
       }
 
       const data = await response.json()
-
-      setWeather({
-        temperature: Math.round(data.main.temp),
-        windSpeed: Math.round(data.wind.speed * 3.6), // Convert m/s to km/h
-        windDirection: data.wind.deg,
-        humidity: data.main.humidity,
-        visibility: Math.round(data.visibility / 1000), // Convert to km
-        description: data.weather[0].description,
-      })
+      setWeather(data)
+      setError(null)
+      
+      if (data.error) {
+        setError(data.error)
+      }
     } catch (err) {
       setError("Unable to load weather data")
       // Fallback demo data for Dakhla
@@ -54,9 +61,11 @@ export function WeatherWidget() {
         humidity: 65,
         visibility: 10,
         description: "perfect for kiting",
+        isDemo: true,
       })
     } finally {
       setLoading(false)
+      setRefreshing(false)
     }
   }
 
@@ -112,9 +121,24 @@ export function WeatherWidget() {
   return (
     <Card>
       <CardHeader>
-        <CardTitle className="flex items-center gap-2">
-          <Wind className="h-5 w-5 text-primary" />
-          Live Weather - Dakhla
+        <CardTitle className="flex items-center justify-between">
+          <div className="flex items-center gap-2">
+            <Wind className="h-5 w-5 text-primary" />
+            Live Weather - Dakhla
+            {weather?.isDemo && (
+              <span className="text-xs bg-yellow-100 text-yellow-800 px-2 py-1 rounded-full">
+                Demo
+              </span>
+            )}
+          </div>
+          <button
+            onClick={() => fetchWeather(true)}
+            disabled={refreshing}
+            className="p-1 hover:bg-muted rounded-md transition-colors"
+            title="Refresh weather data"
+          >
+            <RefreshCw className={`h-4 w-4 ${refreshing ? "animate-spin" : ""}`} />
+          </button>
         </CardTitle>
       </CardHeader>
       <CardContent className="space-y-4">
