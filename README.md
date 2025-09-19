@@ -8,30 +8,26 @@
 
 
 1. Clone the repository:
+   
 
-    ```sh
-    git clone https://github.com/Mohcine-Ghazouani/Task-Management.git
-    cd Task-Management/backend
-    ```
-
-2. Install dependencies:
+3. Install dependencies:
 
     ```sh
     npm install
     ```
     
-3. prisma generate:
+4. prisma generate:
 
     ```sh
     npx prisma generate 
     ```
 
-4. Start the server:
+5. Start the server:
 
     ```sh
     npm run dev
     ```
-5. prisma studio :
+6. prisma studio :
 
     ```sh
     npx prisma studio 
