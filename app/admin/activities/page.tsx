@@ -27,6 +27,7 @@ import {
 import { Skeleton } from "@/components/ui/skeleton"
 import { useToast } from "@/hooks/use-toast"
 import { Activity, Plus, Edit, Trash2, Clock, Package, Eye, ToggleLeft, ToggleRight, Search, Filter, Download, Calendar, Euro, CheckCircle, XCircle, Upload, X } from "lucide-react"
+import { ActivityBookingModal } from "@/components/admin/activity-booking-modal"
 
 interface ActivityType {
   id: number
@@ -692,6 +693,12 @@ export default function AdminActivitiesPage() {
                       <Eye className="h-4 w-4 sm:mr-1" />
                       <span className="hidden sm:inline">Voir</span>
                     </Button>
+                    <ActivityBookingModal
+                      activityId={activity.id}
+                      activityName={activity.name}
+                      activityPrice={activity.price}
+                      maxParticipants={8}
+                    />
                     <Button 
                       size="sm" 
                       variant="outline" 

@@ -1,63 +1,70 @@
-import { NextRequest, NextResponse } from "next/server"
-import { PrismaClient } from "@prisma/client"
+import { NextResponse } from "next/server"
+import { prisma } from "@/lib/prisma"
 
-const prisma = new PrismaClient()
-
-export async function GET(request: NextRequest) {
+export async function GET() {
   try {
-    const { searchParams } = new URL(request.url)
-    const status = searchParams.get("status")
-    const page = parseInt(searchParams.get("page") || "1")
-    const limit = parseInt(searchParams.get("limit") || "50")
-
-    const where = status && status !== "all" ? { status } : {}
-
     const bookings = await prisma.booking.findMany({
-      where,
       include: {
         user: {
           select: {
             id: true,
             name: true,
             email: true,
-            phone: true,
-          },
+            phone: true
+          }
         },
-        course: {
-          select: {
-            id: true,
-            name: true,
-          },
-        },
-        activity: {
-          select: {
-            id: true,
-            name: true,
-          },
-        },
+        course: true,
+        activity: true
       },
       orderBy: {
-        created_at: "desc",
-      },
-      skip: (page - 1) * limit,
-      take: limit,
+        createdAt: 'desc'
+      }
     })
 
-    const total = await prisma.booking.count({ where })
-
-    return NextResponse.json({
-      bookings,
-      pagination: {
-        page,
-        limit,
-        total,
-        pages: Math.ceil(total / limit),
-      },
-    })
+    return NextResponse.json({ bookings })
   } catch (error) {
-    console.error("Error fetching bookings:", error)
+    console.error("Erreur lors de la récupération des réservations:", error)
     return NextResponse.json(
-      { error: "Failed to fetch bookings" },
+      { error: "Erreur serveur" },
+      { status: 500 }
+    )
+  }
+}
+
+export async function PATCH(request: Request) {
+  try {
+    const body = await request.json()
+    const { id, status } = body
+
+    if (!id || !status || !["PENDING", "CONFIRMED", "CANCELLED", "COMPLETED", "DELETED"].includes(status)) {
+      return NextResponse.json(
+        { error: "Données invalides" },
+        { status: 400 }
+      )
+    }
+
+    const booking = await prisma.booking.update({
+      where: { id },
+      data: { status },
+      include: {
+        user: {
+          select: {
+            id: true,
+            name: true,
+            email: true,
+            phone: true
+          }
+        },
+        course: true,
+        activity: true
+      }
+    })
+
+    return NextResponse.json({ booking })
+  } catch (error) {
+    console.error("Erreur lors de la mise à jour de la réservation:", error)
+    return NextResponse.json(
+      { error: "Erreur serveur" },
       { status: 500 }
     )
   }

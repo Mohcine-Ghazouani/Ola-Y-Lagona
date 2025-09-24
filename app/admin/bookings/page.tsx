@@ -64,21 +64,22 @@ interface Booking {
     id: number
     name: string
   }
-  booking_date: string
-  booking_time: string
+  bookingDate: string
+  bookingTime: string
   participants: number
-  total_price: number
-  status: "PENDING" | "CONFIRMED" | "CANCELLED" | "COMPLETED"
+  totalPrice: number
+  status: "PENDING" | "CONFIRMED" | "CANCELLED" | "COMPLETED" | "DELETED"
   notes: string | null
-  created_at: string
+  createdAt: string
 }
 
-const statusConfig = {
+const STATUS_CONFIG = {
   PENDING: { label: "En attente", color: "bg-yellow-100 text-yellow-800", icon: AlertCircle },
   CONFIRMED: { label: "Confirmée", color: "bg-green-100 text-green-800", icon: CheckCircle },
   CANCELLED: { label: "Annulée", color: "bg-red-100 text-red-800", icon: XCircle },
   COMPLETED: { label: "Terminée", color: "bg-blue-100 text-blue-800", icon: CheckCircle },
-}
+  DELETED: { label: "Supprimée", color: "bg-gray-100 text-gray-800", icon: XCircle },
+} as const
 
 export default function AdminBookingsPage() {
   const [bookings, setBookings] = useState<Booking[]>([])
@@ -153,8 +154,8 @@ export default function AdminBookingsPage() {
     return matchesSearch && matchesStatus
   })
 
-  const getStatusIcon = (status: string) => {
-    const config = statusConfig[status as keyof typeof statusConfig]
+  const getStatusIcon = (status: keyof typeof STATUS_CONFIG) => {
+    const config = STATUS_CONFIG[status]
     const Icon = config.icon
     return <Icon className="h-4 w-4" />
   }
@@ -169,11 +170,11 @@ export default function AdminBookingsPage() {
         booking.user.phone || "",
         booking.course ? "Cours" : "Activité",
         booking.course?.name || booking.activity?.name || "",
-        format(new Date(booking.booking_date), "dd/MM/yyyy", { locale: fr }),
-        booking.booking_time,
+        format(new Date(booking.bookingDate), "dd/MM/yyyy", { locale: fr }),
+        booking.bookingTime,
         booking.participants,
-        booking.total_price,
-        statusConfig[booking.status as keyof typeof statusConfig].label
+        booking.totalPrice,
+        STATUS_CONFIG[booking.status as keyof typeof STATUS_CONFIG].label
       ])
     ].map(row => row.join(",")).join("\n")
 
@@ -193,7 +194,7 @@ export default function AdminBookingsPage() {
     completed: bookings.filter(b => b.status === "COMPLETED").length,
     revenue: bookings
       .filter(b => b.status === "CONFIRMED" || b.status === "COMPLETED")
-      .reduce((sum, b) => sum + b.total_price, 0)
+      .reduce((sum, b) => sum + b.totalPrice, 0)
   }
 
   return (
@@ -295,6 +296,7 @@ export default function AdminBookingsPage() {
                 <SelectItem value="CONFIRMED">Confirmée</SelectItem>
                 <SelectItem value="CANCELLED">Annulée</SelectItem>
                 <SelectItem value="COMPLETED">Terminée</SelectItem>
+                <SelectItem value="DELETED">Supprimée</SelectItem>
               </SelectContent>
             </Select>
           </div>
@@ -339,7 +341,7 @@ export default function AdminBookingsPage() {
                 </TableHeader>
                 <TableBody>
                   {filteredBookings.map((booking) => {
-                    const statusConfig = statusConfig[booking.status as keyof typeof statusConfig]
+                    const currentStatus = STATUS_CONFIG[booking.status as keyof typeof STATUS_CONFIG]
                     return (
                       <TableRow key={booking.id}>
                         <TableCell>
@@ -366,11 +368,11 @@ export default function AdminBookingsPage() {
                             <Calendar className="h-4 w-4 text-muted-foreground" />
                             <div>
                               <div className="font-medium">
-                                {format(new Date(booking.booking_date), "dd/MM/yyyy", { locale: fr })}
+                                {format(new Date(booking.bookingDate), "dd/MM/yyyy", { locale: fr })}
                               </div>
                               <div className="text-sm text-muted-foreground flex items-center gap-1">
                                 <Clock className="h-3 w-3" />
-                                {booking.booking_time}
+                                {booking.bookingTime}
                               </div>
                             </div>
                           </div>
@@ -382,12 +384,12 @@ export default function AdminBookingsPage() {
                           </div>
                         </TableCell>
                         <TableCell>
-                          <div className="font-medium">€{booking.total_price}</div>
+                          <div className="font-medium">€{booking.totalPrice}</div>
                         </TableCell>
                         <TableCell>
-                          <Badge className={`${statusConfig.color} flex items-center gap-1 w-fit`}>
+                          <Badge className={`${STATUS_CONFIG[booking.status].color} flex items-center gap-1 w-fit`}>
                             {getStatusIcon(booking.status)}
-                            {statusConfig.label}
+                            {STATUS_CONFIG[booking.status].label}
                           </Badge>
                         </TableCell>
                         <TableCell>
@@ -402,28 +404,43 @@ export default function AdminBookingsPage() {
                             >
                               <Eye className="h-4 w-4" />
                             </Button>
-                            {booking.status === "PENDING" && (
-                              <Select
-                                value={booking.status}
-                                onValueChange={(value) => updateBookingStatus(booking.id, value)}
-                              >
-                                <SelectTrigger className="w-32">
-                                  <SelectValue />
-                                </SelectTrigger>
-                                <SelectContent>
-                                  <SelectItem value="CONFIRMED">Confirmer</SelectItem>
-                                  <SelectItem value="CANCELLED">Annuler</SelectItem>
-                                </SelectContent>
-                              </Select>
-                            )}
-                            {booking.status === "CONFIRMED" && (
-                              <Button
-                                size="sm"
-                                variant="outline"
-                                onClick={() => updateBookingStatus(booking.id, "COMPLETED")}
-                              >
-                                Terminer
-                              </Button>
+                            {booking.status !== "DELETED" && (
+                              <>
+                                {booking.status === "PENDING" && (
+                                  <Select
+                                    value={booking.status}
+                                    onValueChange={(value) => updateBookingStatus(booking.id, value)}
+                                  >
+                                    <SelectTrigger className="w-32">
+                                      <SelectValue />
+                                    </SelectTrigger>
+                                    <SelectContent>
+                                      <SelectItem value="CONFIRMED">Confirmer</SelectItem>
+                                      <SelectItem value="CANCELLED">Annuler</SelectItem>
+                                    </SelectContent>
+                                  </Select>
+                                )}
+                                {booking.status === "CONFIRMED" && (
+                                  <Button
+                                    size="sm"
+                                    variant="outline"
+                                    onClick={() => updateBookingStatus(booking.id, "COMPLETED")}
+                                  >
+                                    Terminer
+                                  </Button>
+                                )}
+                                <Button
+                                  size="sm"
+                                  variant="destructive"
+                                  onClick={() => {
+                                    if (window.confirm("Êtes-vous sûr de vouloir supprimer cette réservation ?")) {
+                                      updateBookingStatus(booking.id, "DELETED")
+                                    }
+                                  }}
+                                >
+                                  Supprimer
+                                </Button>
+                              </>
                             )}
                           </div>
                         </TableCell>
@@ -465,15 +482,15 @@ export default function AdminBookingsPage() {
                     <div><strong>Type:</strong> {selectedBooking.course ? "Cours" : "Activité"}</div>
                     <div><strong>Nom:</strong> {selectedBooking.course?.name || selectedBooking.activity?.name}</div>
                     <div><strong>Participants:</strong> {selectedBooking.participants}</div>
-                    <div><strong>Prix total:</strong> €{selectedBooking.total_price}</div>
+                    <div><strong>Prix total:</strong> €{selectedBooking.totalPrice}</div>
                   </div>
                 </div>
               </div>
               <div>
                 <h4 className="font-medium mb-2">Date et heure</h4>
                 <div className="text-sm">
-                  <div><strong>Date:</strong> {format(new Date(selectedBooking.booking_date), "dd/MM/yyyy", { locale: fr })}</div>
-                  <div><strong>Heure:</strong> {selectedBooking.booking_time}</div>
+                  <div><strong>Date:</strong> {format(new Date(selectedBooking.bookingDate), "dd/MM/yyyy", { locale: fr })}</div>
+                  <div><strong>Heure:</strong> {selectedBooking.bookingTime}</div>
                 </div>
               </div>
               {selectedBooking.notes && (

@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react"
 import { Navigation } from "@/components/navigation"
+import { ActivityBookingModal } from "@/components/admin/activity-booking-modal"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
@@ -44,9 +45,15 @@ export default function ActivitiesPage() {
     }
   }
 
-  const handleBooking = (activityId: number, activityName: string) => {
-    // For now, just show an alert. In a real app, this would open a booking modal
-    alert(`Booking functionality for "${activityName}" will be implemented soon!`)
+  const renderBookingButton = (activity: Activity) => {
+    return (
+      <ActivityBookingModal
+        activityId={activity.id}
+        activityName={activity.name}
+        activityPrice={activity.price}
+        maxParticipants={8}
+      />
+    )
   }
 
   return (
@@ -172,7 +179,7 @@ export default function ActivitiesPage() {
                         <p className="text-2xl font-bold text-primary">€{activity.price}</p>
                         <p className="text-xs text-muted-foreground">per person</p>
                       </div>
-                      <Button onClick={() => handleBooking(activity.id, activity.name)}>Book Now</Button>
+                      {renderBookingButton(activity)}
                     </div>
                   </CardContent>
                 </Card>

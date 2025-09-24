@@ -16,7 +16,7 @@ model User {
   passwordHash String    @map("password_hash")
   role         Role      @default(CLIENT)
   name         String
-  phone        String?
+  phone        String    @unique
   createdAt    DateTime  @default(now()) @map("created_at")
   updatedAt    DateTime  @updatedAt @map("updated_at")
   
@@ -131,4 +131,5 @@ enum BookingStatus {
   CONFIRMED @map("confirmed")
   CANCELLED @map("cancelled")
   COMPLETED @map("completed")
+  DELETED   @map("deleted")
 }

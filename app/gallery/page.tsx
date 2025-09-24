@@ -1,6 +1,7 @@
 "use client"
 
 import { useState, useEffect } from "react"
+import { motion } from "framer-motion"
 import { Navigation } from "@/components/navigation"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
@@ -31,7 +32,6 @@ export default function GalleryPage() {
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
   const [selectedCategory, setSelectedCategory] = useState("all")
-  const [selectedImage, setSelectedImage] = useState<GalleryItem | null>(null)
 
   useEffect(() => {
     fetchGallery()
@@ -41,9 +41,7 @@ export default function GalleryPage() {
     try {
       setLoading(true)
       const response = await fetch(`/api/gallery?category=${selectedCategory}`)
-      if (!response.ok) {
-        throw new Error("Failed to fetch gallery")
-      }
+      if (!response.ok) throw new Error("Failed to fetch gallery")
       const data = await response.json()
       setGallery(data.gallery)
     } catch (err) {
@@ -53,165 +51,148 @@ export default function GalleryPage() {
     }
   }
 
-  const getCategoryLabel = (category: string) => {
-    return categories.find((cat) => cat.value === category)?.label || category
-  }
+  const getCategoryLabel = (category: string) =>
+    categories.find((cat) => cat.value === category)?.label || category
 
   return (
     <div className="min-h-screen bg-background">
       <Navigation />
 
-      {/* Header Section */}
-      <section className="bg-gradient-to-br from-primary/10 via-background to-secondary/10 py-16">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="text-center space-y-4">
-            <h1 className="text-4xl lg:text-5xl font-bold text-balance">Photo Gallery</h1>
-            <p className="text-xl text-muted-foreground max-w-3xl mx-auto text-pretty">
-              Explore stunning moments from our kite sports adventures in Dakhla. From action shots to happy clients,
-              see what makes our experiences unforgettable.
-            </p>
-          </div>
+      {/* Hero Section avec fond vidéo */}
+      <section className="relative h-[70vh] w-full overflow-hidden">
+        <video
+          autoPlay
+          loop
+          muted
+          playsInline
+          className="absolute inset-0 w-full h-full object-cover"
+        >
+          <source src="/videos/kite.mp4" type="video/mp4" />
+        </video>
+        <div className="absolute inset-0 bg-black/50 flex flex-col items-center justify-center text-center text-white p-6">
+          <motion.h1
+            className="text-4xl md:text-6xl font-bold mb-4"
+            initial={{ opacity: 0, y: 40 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 1 }}
+          >
+            Photo Gallery
+          </motion.h1>
+          <motion.p
+            className="text-lg md:text-2xl max-w-2xl"
+            initial={{ opacity: 0, y: 40 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 1, delay: 0.3 }}
+          >
+            Explore stunning kite sports adventures in Dakhla
+          </motion.p>
         </div>
       </section>
 
-      {/* Filter Section */}
-      <section className="py-8 bg-card/50 border-b">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex items-center gap-4 overflow-x-auto pb-2">
-            <div className="flex items-center gap-2 flex-shrink-0">
-              <Filter className="h-5 w-5 text-muted-foreground" />
-              <span className="text-sm font-medium text-muted-foreground">Filter by:</span>
-            </div>
-            <div className="flex gap-2">
-              {categories.map((category) => (
-                <Button
-                  key={category.value}
-                  variant={selectedCategory === category.value ? "default" : "outline"}
-                  size="sm"
-                  onClick={() => setSelectedCategory(category.value)}
-                  className="whitespace-nowrap"
-                >
-                  {category.label}
-                </Button>
-              ))}
-            </div>
-          </div>
+      {/* Filter Section défilante sur mobile */}
+      <section className="py-6 bg-card sticky top-0 z-10 backdrop-blur-lg">
+        <div className="flex items-center gap-3 px-4 overflow-x-auto no-scrollbar">
+          <Filter className="h-5 w-5 text-muted-foreground flex-shrink-0" />
+          {categories.map((category) => (
+            <Button
+              key={category.value}
+              size="sm"
+              variant={selectedCategory === category.value ? "default" : "outline"}
+              onClick={() => setSelectedCategory(category.value)}
+              className="rounded-full whitespace-nowrap"
+            >
+              {category.label}
+            </Button>
+          ))}
         </div>
       </section>
 
       {/* Gallery Grid */}
-      <section className="py-16">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          {loading ? (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-              {[...Array(12)].map((_, index) => (
-                <div key={index} className="space-y-2">
-                  <Skeleton className="w-full aspect-square rounded-lg" />
-                  <Skeleton className="h-4 w-3/4" />
-                  <Skeleton className="h-3 w-1/2" />
-                </div>
-              ))}
-            </div>
-          ) : error ? (
-            <div className="text-center py-12">
-              <p className="text-muted-foreground text-lg">{error}</p>
-              <Button onClick={fetchGallery} className="mt-4">
-                Try Again
-              </Button>
-            </div>
-          ) : gallery.length === 0 ? (
-            <div className="text-center py-12">
-              <Camera className="h-16 w-16 text-muted-foreground mx-auto mb-4" />
-              <h3 className="text-xl font-semibold mb-2">No Photos Found</h3>
-              <p className="text-muted-foreground">
-                {selectedCategory === "all"
-                  ? "No photos available at the moment."
-                  : `No photos found in the ${getCategoryLabel(selectedCategory)} category.`}
-              </p>
-            </div>
-          ) : (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-              {gallery.map((item) => (
-                <Dialog key={item.id}>
-                  <DialogTrigger asChild>
-                    <div className="group cursor-pointer space-y-2">
-                      <div className="relative overflow-hidden rounded-lg bg-muted">
-                        <img
-                          src={item.imageUrl || "/placeholder.svg?height=300&width=300"}
-                          alt={item.title}
-                          className="w-full aspect-square object-cover group-hover:scale-105 transition-transform duration-300"
-                        />
-                        <div className="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-colors duration-300" />
-                        {item.isFeatured && (
-                          <div className="absolute top-2 right-2">
-                            <Badge variant="secondary" className="bg-yellow-500/90 text-white">
-                              <Star className="h-3 w-3 mr-1" />
-                              Featured
-                            </Badge>
-                          </div>
-                        )}
-                        <div className="absolute top-2 left-2">
-                          <Badge variant="outline" className="bg-background/90 text-foreground text-xs">
-                            {getCategoryLabel(item.category)}
-                          </Badge>
-                        </div>
-                      </div>
-                      <div>
-                        <h3 className="font-medium text-sm group-hover:text-primary transition-colors">{item.title}</h3>
-                        {item.description && (
-                          <p className="text-xs text-muted-foreground line-clamp-2">{item.description}</p>
-                        )}
-                      </div>
+      <section className="py-10 px-4 sm:px-6 lg:px-8">
+        {loading ? (
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+            {[...Array(8)].map((_, i) => (
+              <Skeleton key={i} className="w-full aspect-square rounded-xl" />
+            ))}
+          </div>
+        ) : error ? (
+          <div className="text-center py-12">
+            <p className="text-muted-foreground text-lg">{error}</p>
+            <Button onClick={fetchGallery} className="mt-4">
+              Try Again
+            </Button>
+          </div>
+        ) : (
+          <motion.div
+            layout
+            className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4"
+          >
+            {gallery.map((item) => (
+              <Dialog key={item.id}>
+                <DialogTrigger asChild>
+                  <motion.div
+                    whileHover={{ scale: 1.05 }}
+                    whileTap={{ scale: 0.97 }}
+                    className="relative cursor-pointer overflow-hidden rounded-xl shadow-lg group"
+                  >
+                    <img
+                      src={item.imageUrl}
+                      alt={item.title}
+                      className="w-full aspect-square object-cover transition-transform duration-500 group-hover:scale-110"
+                    />
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-black/10 to-transparent opacity-0 group-hover:opacity-100 transition" />
+                    {item.isFeatured && (
+                      <Badge className="absolute top-2 right-2 bg-yellow-500 text-white">
+                        <Star className="h-3 w-3 mr-1" /> Featured
+                      </Badge>
+                    )}
+                    <div className="absolute bottom-2 left-2 text-white">
+                      <h3 className="font-bold text-sm">{item.title}</h3>
                     </div>
-                  </DialogTrigger>
-                  <DialogContent className="max-w-4xl">
-                    <div className="space-y-4">
-                      <img
-                        src={item.imageUrl || "/placeholder.svg?height=600&width=800"}
-                        alt={item.title}
-                        className="w-full max-h-[70vh] object-contain rounded-lg"
-                      />
-                      <div className="space-y-2">
-                        <div className="flex items-center justify-between">
-                          <h2 className="text-xl font-semibold">{item.title}</h2>
-                          <Badge variant="outline">{getCategoryLabel(item.category)}</Badge>
-                        </div>
-                        {item.description && <p className="text-muted-foreground">{item.description}</p>}
-                      </div>
-                    </div>
-                  </DialogContent>
-                </Dialog>
-              ))}
-            </div>
-          )}
-        </div>
+                  </motion.div>
+                </DialogTrigger>
+                <DialogContent className="max-w-5xl">
+                  <img
+                    src={item.imageUrl}
+                    alt={item.title}
+                    className="w-full rounded-lg max-h-[80vh] object-contain"
+                  />
+                  {item.description && (
+                    <p className="text-muted-foreground mt-4">{item.description}</p>
+                  )}
+                </DialogContent>
+              </Dialog>
+            ))}
+          </motion.div>
+        )}
       </section>
 
-      {/* Call to Action */}
-      <section className="py-16 bg-card/50">
-        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <div className="space-y-6">
-            <h2 className="text-3xl lg:text-4xl font-bold">Ready to Create Your Own Memories?</h2>
-            <p className="text-xl text-muted-foreground">
-              Join us for an unforgettable kite sports experience in the beautiful lagoons of Dakhla.
-            </p>
-            <div className="flex flex-col sm:flex-row gap-4 justify-center">
-              <Button size="lg">Book Your Adventure</Button>
-              <Button variant="outline" size="lg" className="bg-transparent">
-                Contact Us
-              </Button>
-            </div>
+      {/* CTA */}
+      <section className="relative py-20 bg-gradient-to-br from-primary/10 via-background to-secondary/20">
+        <div className="max-w-3xl mx-auto text-center space-y-6 px-4">
+          <motion.h2
+            className="text-3xl md:text-5xl font-bold"
+            initial={{ opacity: 0, y: 40 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.8 }}
+          >
+            Ready to Create Your Own Memories?
+          </motion.h2>
+          <p className="text-lg text-muted-foreground">
+            Join us for an unforgettable kite sports adventure in the lagoons of Dakhla.
+          </p>
+          <div className="flex flex-col sm:flex-row justify-center gap-4">
+            <Button size="lg">Book Now</Button>
+            <Button size="lg" variant="outline">
+              Contact Us
+            </Button>
           </div>
         </div>
       </section>
 
       {/* Footer */}
-      <footer className="bg-card border-t">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-          <div className="text-center text-sm text-muted-foreground">
-            <p>&copy; 2024 Kite Dakhla. All rights reserved.</p>
-          </div>
-        </div>
+      <footer className="bg-card border-t py-6 text-center text-muted-foreground text-sm">
+        © 2024 Kite Dakhla. All rights reserved.
       </footer>
     </div>
   )

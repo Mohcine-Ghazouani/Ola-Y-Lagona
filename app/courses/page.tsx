@@ -7,6 +7,7 @@ import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
 import { Skeleton } from "@/components/ui/skeleton"
 import { Clock, Users, Award, BookOpen } from "lucide-react"
+import { BookingModal } from "@/components/booking-modal"
 
 interface Course {
   id: number
@@ -42,10 +43,7 @@ export default function CoursesPage() {
     }
   }
 
-  const handleBooking = (courseId: number, courseName: string) => {
-    // For now, just show an alert. In a real app, this would open a booking modal
-    alert(`Booking functionality for "${courseName}" will be implemented soon!`)
-  }
+  // Booking is now handled by the BookingModal component
 
   return (
     <div className="min-h-screen bg-background">
@@ -146,7 +144,7 @@ export default function CoursesPage() {
                         <p className="text-2xl font-bold text-primary">€{course.price}</p>
                         <p className="text-xs text-muted-foreground">per person</p>
                       </div>
-                      <Button onClick={() => handleBooking(course.id, course.name)}>Book Now</Button>
+                      <BookingModal courseId={course.id} courseName={course.name} />
                     </div>
                   </CardContent>
                 </Card>
