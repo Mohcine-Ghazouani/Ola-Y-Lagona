@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react"
 import { Navigation } from "@/components/navigation"
-import { ActivityBookingModal } from "@/components/admin/activity-booking-modal"
+import { ActivityBookingModal } from "@/components/activity-booking-modal"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"

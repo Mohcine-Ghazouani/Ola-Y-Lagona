@@ -114,29 +114,45 @@ export default function AdminBookingsPage() {
 
   const updateBookingStatus = async (bookingId: number, newStatus: string) => {
     try {
-      const response = await fetch(`/api/admin/bookings/${bookingId}`, {
-        method: "PATCH",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ status: newStatus }),
-      })
-
-      if (response.ok) {
-        setBookings(prev => 
-          prev.map(booking => 
-            booking.id === bookingId 
-              ? { ...booking, status: newStatus as Booking["status"] }
-              : booking
-          )
-        )
-        toast({
-          title: "Succès",
-          description: "Statut de la réservation mis à jour",
+      // Si le statut est "DELETED", on supprime la réservation
+      if (newStatus === "DELETED") {
+        const response = await fetch(`/api/admin/bookings/${bookingId}`, {
+          method: "DELETE",
         })
+
+        if (response.ok) {
+          setBookings(prev => prev.filter(booking => booking.id !== bookingId))
+          toast({
+            title: "Succès",
+            description: "Réservation supprimée avec succès",
+          })
+        }
+      } else {
+        // Sinon, on met à jour le statut
+        const response = await fetch(`/api/admin/bookings/${bookingId}`, {
+          method: "PATCH",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ status: newStatus }),
+        })
+
+        if (response.ok) {
+          setBookings(prev => 
+            prev.map(booking => 
+              booking.id === bookingId 
+                ? { ...booking, status: newStatus as Booking["status"] }
+                : booking
+            )
+          )
+          toast({
+            title: "Succès",
+            description: "Statut de la réservation mis à jour",
+          })
+        }
       }
     } catch (error) {
       toast({
         title: "Erreur",
-        description: "Impossible de mettre à jour le statut",
+        description: "Opération impossible",
         variant: "destructive",
       })
     }
@@ -433,7 +449,7 @@ export default function AdminBookingsPage() {
                                   size="sm"
                                   variant="destructive"
                                   onClick={() => {
-                                    if (window.confirm("Êtes-vous sûr de vouloir supprimer cette réservation ?")) {
+                                    if (window.confirm("Êtes-vous sûr de vouloir supprimer définitivement cette réservation ? Cette action est irréversible.")) {
                                       updateBookingStatus(booking.id, "DELETED")
                                     }
                                   }}

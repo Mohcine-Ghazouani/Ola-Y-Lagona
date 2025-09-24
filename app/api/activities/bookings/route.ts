@@ -6,19 +6,15 @@ export async function POST(request: Request) {
     const body = await request.json()
     const { 
       activityId, 
-      date, 
-      time, 
       name, 
       phone, 
       participants, 
-      totalPrice, 
-      status = "PENDING",
-      notes,
-      equipmentNeeded 
+      totalPrice,
+      message 
     } = body
 
     // Validation basique
-    if (!activityId || !date || !name || !phone || !time) {
+    if (!activityId || !name || !phone) {
       return NextResponse.json(
         { error: "Informations manquantes" },
         { status: 400 }
@@ -57,16 +53,20 @@ export async function POST(request: Request) {
     }
 
     // Créer la réservation
+    // Date du jour pour la réservation
+    const today = new Date()
+    
+    // Créer la réservation
     const booking = await prisma.booking.create({
       data: {
         userId: user.id,
         activityId,
-        bookingDate: new Date(date),
-        bookingTime: time,
+        bookingDate: today,
+        bookingTime: "00:00", // Heure par défaut, sera modifiée par l'admin
         participants: participants || 1,
-        totalPrice,
-        status,
-        notes: notes || equipmentNeeded ? "Équipement requis" : "Équipement personnel",
+        totalPrice: totalPrice || activity.price,
+        status: "PENDING",
+        notes: message || null,
       },
       include: {
         activity: true,
