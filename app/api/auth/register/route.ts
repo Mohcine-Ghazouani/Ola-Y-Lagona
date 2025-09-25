@@ -4,12 +4,13 @@ import { registerUser } from "@/lib/auth"
 export async function POST(request: NextRequest) {
   try {
     const { email, password, name, phone } = await request.json()
+    const sanitizedPhone = typeof phone === "string" && phone.trim() !== "" ? phone : undefined
 
     if (!email || !password || !name) {
       return NextResponse.json({ error: "Email, password, and name are required" }, { status: 400 })
     }
 
-    const result = await registerUser(email, password, name, phone)
+    const result = await registerUser(email, password, name, sanitizedPhone)
 
     if (!result.success) {
       return NextResponse.json({ error: result.error }, { status: 400 })

@@ -109,7 +109,7 @@ export async function registerUser(
         passwordHash: hashedPassword,
         role: userRole.toUpperCase() as Role,
         name,
-        phone,
+        ...(phone && phone.trim() !== "" ? { phone } : {}),
       },
     })
 
@@ -118,11 +118,18 @@ export async function registerUser(
 
     return { success: true, user: userInfo, token }
   } catch (error: any) {
+    console.error("registerUser error:", error)
     if (error.code === "P2002") {
       // Prisma unique constraint error
-      return { success: false, error: "Email already exists" }
+      if (error.meta?.target?.includes("email")) {
+        return { success: false, error: "Email already exists" }
+      }
+      if (error.meta?.target?.includes("phone")) {
+        return { success: false, error: "Phone already exists" }
+      }
+      return { success: false, error: "Unique constraint violation" }
     }
-    return { success: false, error: "Registration failed" }
+    return { success: false, error: error?.message || "Registration failed" }
   }
 }
 

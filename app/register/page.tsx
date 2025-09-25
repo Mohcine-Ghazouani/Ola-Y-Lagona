@@ -30,12 +30,15 @@ export default function RegisterPage() {
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target
     
-    // Special handling for phone input - only allow numbers and max 10 digits
+    // Special handling for phone input - allow + and digits; strip formatting
     if (name === "phone") {
-      const numericValue = value.replace(/\D/g, "") // Remove all non-numeric characters
-      if (numericValue.length <= 10) {
-        setFormData((prev) => ({ ...prev, [name]: numericValue }))
-      }
+      // Remove common formatting characters like spaces, dashes, parentheses
+      const cleaned = value.replace(/[\s\-().]/g, "")
+      // Allow a single leading + and digits elsewhere
+      const normalized = cleaned.startsWith("+")
+        ? "+" + cleaned.slice(1).replace(/\D/g, "")
+        : cleaned.replace(/\D/g, "")
+      setFormData((prev) => ({ ...prev, [name]: normalized }))
       return
     }
     
@@ -63,10 +66,44 @@ export default function RegisterPage() {
       return
     }
 
+    // Normalize and validate phone number to E.164 format
+    const normalizeToE164 = (input: string): string | undefined => {
+      if (!input) return undefined
+      let p = input.trim().replace(/[\s\-().]/g, "")
+      if (p.startsWith("00")) {
+        p = "+" + p.slice(2)
+      }
+      if (!p.startsWith("+")) {
+        p = "+" + p
+      }
+      // E.164: + followed by up to 15 digits, first digit 1-9
+      if (!/^\+[1-9]\d{1,14}$/.test(p)) {
+        return undefined
+      }
+      return p
+    }
+
+    const normalizedPhone: string | undefined = formData.phone.trim()
+      ? normalizeToE164(formData.phone)
+      : undefined
+    if (formData.phone.trim() && !normalizedPhone) {
+      toast({
+        title: "Invalid Phone Number",
+        description: "Enter a valid international number in E.164 format (e.g., +212612345678).",
+        variant: "destructive",
+      })
+      return
+    }
+
     setLoading(true)
 
     try {
-      const result = await register(formData.email, formData.password, formData.name, formData.phone)
+      const result = await register(
+        formData.email,
+        formData.password,
+        formData.name,
+        normalizedPhone,
+      )
 
       if (result.success) {
         toast({
@@ -138,8 +175,7 @@ export default function RegisterPage() {
                 type="tel"
                 value={formData.phone}
                 onChange={handleInputChange}
-                maxLength={10}
-                placeholder="1234567890"
+                placeholder="+212612345678"
               />
             </div>
 
