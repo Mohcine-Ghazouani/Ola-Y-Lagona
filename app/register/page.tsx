@@ -29,6 +29,16 @@ export default function RegisterPage() {
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target
+    
+    // Special handling for phone input - only allow numbers and max 10 digits
+    if (name === "phone") {
+      const numericValue = value.replace(/\D/g, "") // Remove all non-numeric characters
+      if (numericValue.length <= 10) {
+        setFormData((prev) => ({ ...prev, [name]: numericValue }))
+      }
+      return
+    }
+    
     setFormData((prev) => ({ ...prev, [name]: value }))
   }
 
@@ -121,14 +131,15 @@ export default function RegisterPage() {
             </div>
 
             <div className="space-y-2">
-              <Label htmlFor="phone">Phone (Optional)</Label>
+              <Label htmlFor="phone">Phone</Label>
               <Input
                 id="phone"
                 name="phone"
                 type="tel"
                 value={formData.phone}
                 onChange={handleInputChange}
-                placeholder="+212 XXX XXX XXX"
+                maxLength={10}
+                placeholder="1234567890"
               />
             </div>
 

@@ -91,16 +91,23 @@ export async function registerUser(
   password: string,
   name: string,
   phone?: string,
-  role: "admin" | "client" = "client",
+  role?: "admin" | "client",
 ): Promise<AuthResult> {
   try {
     const hashedPassword = await hashPassword(password)
+
+    // Check if this is the first user (users table is empty)
+    const userCount = await prisma.user.count()
+    const isFirstUser = userCount === 0
+    
+    // If no role is specified, assign admin to first user, client to others
+    const userRole = role || (isFirstUser ? "admin" : "client")
 
     const user = await prisma.user.create({
       data: {
         email,
         passwordHash: hashedPassword,
-        role: role.toUpperCase() as Role,
+        role: userRole.toUpperCase() as Role,
         name,
         phone,
       },

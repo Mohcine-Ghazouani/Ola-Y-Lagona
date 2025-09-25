@@ -108,8 +108,8 @@ model Booking {
 }
 
 enum Role {
-  ADMIN  @map("admin")
-  CLIENT @map("client")
+  ADMIN  
+  CLIENT 
 }
 
 enum GalleryCategory {
