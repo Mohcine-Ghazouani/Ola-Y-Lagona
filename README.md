@@ -32,7 +32,12 @@
     ```sh
     npx prisma studio 
     ```
+7. seeders (optional) :
 
+    ```sh
+   npm run db:push
+   npm run db:seed
+    ```
 ## Environment Variables
 
 Create a `.env.local` file in the root directory with the following variables:
