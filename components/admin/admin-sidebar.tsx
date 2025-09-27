@@ -16,7 +16,7 @@ const navigation = [
   { name: "Gallery", href: "/admin/gallery", icon: Images },
   { name: "Contacts", href: "/admin/contacts", icon: MessageSquare },
   { name: "Users", href: "/admin/users", icon: Users },
-  { name: "Settings", href: "/admin/settings", icon: Settings },
+  // { name: "Settings", href: "/admin/settings", icon: Settings },
 ]
 
 export function AdminSidebar() {
