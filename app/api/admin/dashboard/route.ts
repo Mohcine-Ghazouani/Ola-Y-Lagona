@@ -56,7 +56,7 @@ export async function GET(request: NextRequest) {
       prisma.booking.count({ where: { status: "COMPLETED" } }),
       prisma.booking.count({
         where: {
-          booking_date: {
+          bookingDate: {
             gte: today,
             lt: tomorrow,
           },
@@ -69,7 +69,7 @@ export async function GET(request: NextRequest) {
           },
         },
         _sum: {
-          total_price: true,
+          totalPrice: true,
         },
       }),
     ])
@@ -89,7 +89,7 @@ export async function GET(request: NextRequest) {
         confirmedBookings,
         completedBookings,
         todayBookings,
-        totalRevenue: totalRevenue._sum.total_price || 0,
+        totalRevenue: totalRevenue._sum.totalPrice || 0,
       },
     })
   } catch (error) {
