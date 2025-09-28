@@ -21,8 +21,9 @@ export function Navigation() {
         <div className="flex justify-between items-center h-16">
           {/* Logo */}
           <Link href="/" className="flex items-center space-x-2">
-            <Wind className="h-8 w-8 text-primary" />
-            <span className="font-bold text-xl text-foreground">Kite Dakhla</span>
+            {/* <Wind className="h-8 w-8 text-primary" /> */}
+            <img src="/logo.png" alt="Ola Y Lagona" width={52} />
+            <span className="font-bold text-xl text-foreground">Ola Y Lagona</span>
           </Link>
 
           {/* Desktop Navigation */}

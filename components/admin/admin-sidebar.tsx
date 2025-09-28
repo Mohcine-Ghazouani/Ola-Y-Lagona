@@ -22,7 +22,7 @@ const navigation = [
 export function AdminSidebar() {
   const pathname = usePathname()
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
-  
+
   // Désactiver temporairement l'authentification pour le développement
   // const { user, logout } = useAuth()
 
@@ -54,7 +54,7 @@ export function AdminSidebar() {
 
       {/* Mobile Overlay */}
       {isMobileMenuOpen && (
-        <div 
+        <div
           className="lg:hidden fixed inset-0 bg-black/50 z-40"
           onClick={closeMobileMenu}
         />
@@ -80,9 +80,9 @@ export function AdminSidebar() {
 
         <div className="p-6">
           <Link href="/admin" className="flex items-center space-x-2" onClick={closeMobileMenu}>
-            <Wind className="h-8 w-8 text-primary" />
+            <img src="/logo.png" alt="Ola Y Lagona" width={52} />
             <div>
-              <span className="font-bold text-lg">Kite Dakhla</span>
+              <span className="font-bold text-lg">Ola Y Lagona</span>
               <p className="text-xs text-muted-foreground">Admin Panel</p>
             </div>
           </Link>

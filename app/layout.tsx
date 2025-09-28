@@ -8,8 +8,12 @@ import { Toaster } from "@/components/ui/toaster"
 import { Suspense } from "react"
 import "./globals.css"
 
+
 export const metadata: Metadata = {
-  title: "Kite Dakhla - Premium Kite Sports Lessons in Morocco",
+  icons: {
+    icon: "/meta_logo.png",
+  },
+  title: "Ola Y Lagona",
   description:
     "Experience the best kitesurfing, kite buggy, landboarding and paddleboard lessons in Dakhla, Morocco. Professional instructors and equipment.",
   generator: "v0.app",
