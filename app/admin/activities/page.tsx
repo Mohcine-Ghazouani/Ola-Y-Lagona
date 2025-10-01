@@ -48,6 +48,7 @@ interface ActivityType {
 export default function AdminActivitiesPage() {
   const [activities, setActivities] = useState<ActivityType[]>([])
   const [loading, setLoading] = useState(true)
+  const [refreshKey, setRefreshKey] = useState(0)
   const [editingActivity, setEditingActivity] = useState<ActivityType | null>(null)
   const [isDialogOpen, setIsDialogOpen] = useState(false)
   const [searchTerm, setSearchTerm] = useState("")
@@ -285,6 +286,10 @@ export default function AdminActivitiesPage() {
   }
 
   const toggleActivityStatus = async (id: number, currentStatus: boolean) => {
+    console.log('=== TOGGLE DEBUG START ===')
+    console.log('Toggle called with:', { id, currentStatus })
+    console.log('Current activities before toggle:', activities.find(a => a.id === id))
+    
     try {
       const response = await fetch(`/api/admin/activities/${id}`, {
         method: "PATCH",
@@ -292,24 +297,53 @@ export default function AdminActivitiesPage() {
         body: JSON.stringify({ is_active: !currentStatus }),
       })
 
+      console.log('Response status:', response.status)
+      
       if (response.ok) {
-        setActivities((prev) =>
-          prev.map((activity) =>
-            activity.id === id ? { ...activity, is_active: !currentStatus } : activity
-          )
-        )
+        const data = await response.json()
+        console.log('Response data:', data)
+        console.log('Activity from response:', data.activity)
+        console.log('isActive from response:', data.activity?.isActive)
+        
+        setActivities((prev) => {
+          console.log('Previous activities:', prev.find(a => a.id === id))
+          const updated = prev.map((activity) => {
+            if (activity.id === id) {
+              const newActivity = { ...activity, isActive: data.activity.isActive }
+              console.log('New activity state:', newActivity)
+              return newActivity
+            }
+            return activity
+          })
+          console.log('Updated activities array:', updated.find(a => a.id === id))
+          return updated
+        })
+        
+        // Force re-render to ensure UI updates
+        setRefreshKey(prev => prev + 1)
+        
         toast({
           title: "Succès",
-          description: `Activité ${!currentStatus ? "activée" : "désactivée"} avec succès`,
+          description: `Activité ${data.activity.isActive ? "activée" : "désactivée"} avec succès`,
+        })
+      } else {
+        const errorText = await response.text()
+        console.error('Response not ok:', response.status, errorText)
+        toast({
+          title: "Erreur",
+          description: `Erreur ${response.status}: ${errorText}`,
+          variant: "destructive",
         })
       }
     } catch (error) {
+      console.error('Toggle error:', error)
       toast({
         title: "Erreur",
         description: "Impossible de modifier le statut de l'activité",
         variant: "destructive",
       })
     }
+    console.log('=== TOGGLE DEBUG END ===')
   }
 
   const resetForm = () => {
@@ -620,7 +654,7 @@ export default function AdminActivitiesPage() {
         </CardContent>
       </Card>
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6" key={refreshKey}>
         {loading
           ? [...Array(6)].map((_, index) => (
               <Card key={index}>

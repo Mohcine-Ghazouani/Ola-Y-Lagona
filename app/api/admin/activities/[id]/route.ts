@@ -65,14 +65,14 @@ export async function PATCH(request: NextRequest, { params }: { params: { id: st
       return NextResponse.json({ error: "Missing is_active field" }, { status: 400 })
     }
 
-    await prisma.activity.update({
+    const updatedActivity = await prisma.activity.update({
       where: { id: activityId },
       data: {
         isActive: is_active,
       },
     })
 
-    return NextResponse.json({ success: true })
+    return NextResponse.json({ success: true, activity: updatedActivity })
   } catch (error: any) {
     if (error.code === "P2025") {
       return NextResponse.json({ error: "Activity not found" }, { status: 404 })

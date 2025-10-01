@@ -47,6 +47,7 @@ interface Course {
 export default function AdminCoursesPage() {
   const [courses, setCourses] = useState<Course[]>([])
   const [loading, setLoading] = useState(true)
+  const [refreshKey, setRefreshKey] = useState(0)
   const [editingCourse, setEditingCourse] = useState<Course | null>(null)
   const [isDialogOpen, setIsDialogOpen] = useState(false)
   const [searchTerm, setSearchTerm] = useState("")
@@ -294,14 +295,19 @@ export default function AdminCoursesPage() {
       })
 
       if (response.ok) {
+        const data = await response.json()
         setCourses((prev) =>
           prev.map((course) =>
-            course.id === id ? { ...course, is_active: !currentStatus } : course
+            course.id === id ? { ...course, isActive: data.course.isActive } : course
           )
         )
+        
+        // Force re-render to ensure UI updates
+        setRefreshKey(prev => prev + 1)
+        
         toast({
           title: "Succès",
-          description: `Cours ${!currentStatus ? "activé" : "désactivé"} avec succès`,
+          description: `Cours ${data.course.isActive ? "activé" : "désactivé"} avec succès`,
         })
       }
     } catch (error) {
@@ -621,7 +627,7 @@ export default function AdminCoursesPage() {
         </CardContent>
       </Card>
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 sm:gap-6" key={refreshKey}>
         {loading
           ? [...Array(6)].map((_, index) => (
               <Card key={index}>

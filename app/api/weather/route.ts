@@ -2,7 +2,9 @@ import { NextRequest, NextResponse } from "next/server"
 
 export async function GET(request: NextRequest) {
   try {
-    const API_KEY = process.env.OPENWEATHER_API_KEY
+    // const API_KEY = process.env.OPENWEATHER_API_KEY
+    const API_KEY = process.env.NEXT_PUBLIC_OPENWEATHER_API_KEY;
+
     
     if (!API_KEY) {
       // Return fallback demo data if no API key is configured
