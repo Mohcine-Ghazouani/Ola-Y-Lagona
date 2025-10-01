@@ -57,16 +57,6 @@ OPENWEATHER_API_KEY="your-openweathermap-api-key-here"
 NEXT_PUBLIC_APP_URL="http://localhost:3000"
 ```
 
-### Weather API Setup (Optional)
-
-To enable live weather data on the home page:
-
-1. Visit [OpenWeatherMap](https://openweathermap.org/api) and sign up for a free account
-2. Get your API key from the dashboard
-3. Add `OPENWEATHER_API_KEY=your-api-key` to your `.env.local` file
-4. Restart the development server
-
-Without the API key, the weather widget will show demo data for Dakhla, Morocco.
 
 ## Running the Application
 
