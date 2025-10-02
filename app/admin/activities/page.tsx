@@ -27,7 +27,6 @@ import {
 import { Skeleton } from "@/components/ui/skeleton"
 import { useToast } from "@/hooks/use-toast"
 import { Activity, Plus, Edit, Trash2, Clock, Package, Eye, ToggleLeft, ToggleRight, Search, Filter, Download, Calendar, Euro, CheckCircle, XCircle, Upload, X } from "lucide-react"
-import { ActivityBookingModal } from "@/components/admin/activity-booking-modal"
 
 interface ActivityType {
   id: number
@@ -430,7 +429,7 @@ export default function AdminActivitiesPage() {
                 <span className="sm:hidden">Ajouter</span>
               </Button>
             </DialogTrigger>
-          <DialogContent className="max-w-2xl mx-4 sm:mx-0">
+          <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto mx-4 sm:mx-0">
             <DialogHeader>
               <DialogTitle>{editingActivity ? "Modifier l'activité" : "Ajouter une nouvelle activité"}</DialogTitle>
               <DialogDescription>
@@ -727,12 +726,6 @@ export default function AdminActivitiesPage() {
                       <Eye className="h-4 w-4 sm:mr-1" />
                       <span className="hidden sm:inline">Voir</span>
                     </Button>
-                    <ActivityBookingModal
-                      activityId={activity.id}
-                      activityName={activity.name}
-                      activityPrice={activity.price}
-                      maxParticipants={8}
-                    />
                     <Button 
                       size="sm" 
                       variant="outline" 
@@ -759,7 +752,7 @@ export default function AdminActivitiesPage() {
 
       {/* Détails de l'activité */}
       <Dialog open={isDetailsOpen} onOpenChange={setIsDetailsOpen}>
-        <DialogContent className="max-w-2xl mx-4 sm:mx-0">
+        <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto mx-4 sm:mx-0">
           <DialogHeader>
             <DialogTitle>Détails de l'activité</DialogTitle>
             <DialogDescription>

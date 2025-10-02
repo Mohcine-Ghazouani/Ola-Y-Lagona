@@ -367,7 +367,7 @@ export default function AdminCoursesPage() {
         course.price,
         course.durationHours,
         course.maxParticipants,
-        course.isActive ? "Actif" : "Inactif",
+        course.isActive ? "Active" : "Inactive",
         course._count?.bookings || 0,
         (course.price * (course._count?.bookings || 0)).toFixed(2)
       ])
@@ -403,7 +403,7 @@ export default function AdminCoursesPage() {
                 <span className="sm:hidden">Ajouter</span>
               </Button>
             </DialogTrigger>
-          <DialogContent className="max-w-2xl mx-4 sm:mx-0">
+          <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto mx-4 sm:mx-0">
             <DialogHeader>
               <DialogTitle>{editingCourse ? "Modifier le cours" : "Ajouter un nouveau cours"}</DialogTitle>
               <DialogDescription>
@@ -521,7 +521,7 @@ export default function AdminCoursesPage() {
                   onCheckedChange={(checked) => setFormData({ ...formData, is_active: checked as boolean })}
                 />
                 <label htmlFor="is_active" className="text-sm font-medium">
-                  Cours actif
+                  Cours active
                 </label>
               </div>
               <div className="flex gap-2 pt-4">
@@ -552,7 +552,7 @@ export default function AdminCoursesPage() {
         </Card>
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Actifs</CardTitle>
+            <CardTitle className="text-sm font-medium">Actives</CardTitle>
             <CheckCircle className="h-4 w-4 text-green-600" />
           </CardHeader>
           <CardContent>
@@ -562,7 +562,7 @@ export default function AdminCoursesPage() {
         </Card>
         <Card>
           <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-sm font-medium">Inactifs</CardTitle>
+            <CardTitle className="text-sm font-medium">Inactives</CardTitle>
             <XCircle className="h-4 w-4 text-red-600" />
           </CardHeader>
           <CardContent>
@@ -619,8 +619,8 @@ export default function AdminCoursesPage() {
               </SelectTrigger>
               <SelectContent>
                 <SelectItem value="all">Tous les statuts</SelectItem>
-                <SelectItem value="active">Actifs</SelectItem>
-                <SelectItem value="inactive">Inactifs</SelectItem>
+                <SelectItem value="active">Actives</SelectItem>
+                <SelectItem value="inactive">Inactives</SelectItem>
               </SelectContent>
             </Select>
           </div>
@@ -661,7 +661,7 @@ export default function AdminCoursesPage() {
                             : "bg-red-100 text-red-800 hover:bg-red-200"
                         }`}
                       >
-                        {course.isActive ? "Actif" : "Inactif"}
+                        {course.isActive ? "Active" : "Inactive"}
                       </button>
                     </div>
                   </div>
@@ -724,7 +724,7 @@ export default function AdminCoursesPage() {
 
       {/* Détails du cours */}
       <Dialog open={isDetailsOpen} onOpenChange={setIsDetailsOpen}>
-        <DialogContent className="max-w-2xl mx-4 sm:mx-0">
+        <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto mx-4 sm:mx-0">
           <DialogHeader>
             <DialogTitle>Détails du cours</DialogTitle>
             <DialogDescription>
@@ -741,7 +741,7 @@ export default function AdminCoursesPage() {
                     <div><strong>Prix:</strong> €{selectedCourse.price}</div>
                     <div><strong>Durée:</strong> {selectedCourse.durationHours} heures</div>
                     <div><strong>Participants max:</strong> {selectedCourse.maxParticipants}</div>
-                    <div><strong>Statut:</strong> {selectedCourse.isActive ? "Actif" : "Inactif"}</div>
+                    <div><strong>Statut:</strong> {selectedCourse.isActive ? "Active" : "Inactive"}</div>
                   </div>
                 </div>
                 <div>
