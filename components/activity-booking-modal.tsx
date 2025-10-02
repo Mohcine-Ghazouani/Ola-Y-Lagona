@@ -83,7 +83,7 @@ export function ActivityBookingModal({
       <DialogTrigger asChild>
         <Button>Book Now</Button>
       </DialogTrigger>
-      <DialogContent className="sm:max-w-[425px]">
+      <DialogContent className="sm:max-w-[425px] max-h-[90vh] overflow-y-auto">
         <DialogHeader>
           <DialogTitle>Réserver {activityName}</DialogTitle>
           <DialogDescription>
@@ -92,7 +92,7 @@ export function ActivityBookingModal({
           </DialogDescription>
         </DialogHeader>
 
-        <form onSubmit={handleSubmit} className="space-y-4">
+        <form onSubmit={handleSubmit} className="space-y-4 pb-4">
           <div className="space-y-2">
             <Label htmlFor="name">Nom complet *</Label>
             <Input

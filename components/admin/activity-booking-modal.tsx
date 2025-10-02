@@ -117,7 +117,7 @@ export function ActivityBookingModal({
       <DialogTrigger asChild>
         <Button>Nouvelle Réservation</Button>
       </DialogTrigger>
-      <DialogContent className="sm:max-w-[600px]">
+      <DialogContent className="sm:max-w-[600px] max-h-[90vh] overflow-y-auto">
         <DialogHeader>
           <DialogTitle>Réserver {activityName}</DialogTitle>
           <DialogDescription>
@@ -125,7 +125,7 @@ export function ActivityBookingModal({
           </DialogDescription>
         </DialogHeader>
 
-        <form onSubmit={handleSubmit} className="space-y-6">
+        <form onSubmit={handleSubmit} className="space-y-6 pb-4">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             {/* Informations client */}
             <div className="space-y-4">

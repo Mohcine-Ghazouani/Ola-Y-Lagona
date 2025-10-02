@@ -86,7 +86,7 @@ export function BookingModal({ courseId, courseName }: BookingModalProps) {
       <DialogTrigger asChild>
         <Button>Réserver maintenant</Button>
       </DialogTrigger>
-      <DialogContent className="sm:max-w-[425px]">
+      <DialogContent className="sm:max-w-[425px] max-h-[90vh] overflow-y-auto">
         <DialogHeader>
           <DialogTitle>Réserver {courseName}</DialogTitle>
           <DialogDescription>
@@ -96,7 +96,7 @@ export function BookingModal({ courseId, courseName }: BookingModalProps) {
           </DialogDescription>
         </DialogHeader>
 
-        <form onSubmit={handleSubmit} className="space-y-4">
+        <form onSubmit={handleSubmit} className="space-y-4 pb-4">
           <div className="grid gap-4 py-4">
             <div className="grid grid-cols-4 items-center gap-4">
               <Label htmlFor="name" className="text-right">

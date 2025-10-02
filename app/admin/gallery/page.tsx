@@ -324,14 +324,15 @@ export default function AdminGalleryPage() {
                 <span className="sm:hidden">Add</span>
               </Button>
             </DialogTrigger>
-          <DialogContent className="max-w-2xl mx-4 sm:mx-0">
-            <DialogHeader>
+          <DialogContent className="max-w-2xl max-h-[90vh] mx-4 sm:mx-0 overflow-hidden flex flex-col">
+            <DialogHeader className="flex-shrink-0">
               <DialogTitle>{editingItem ? "Edit Gallery Item" : "Add New Image"}</DialogTitle>
               <DialogDescription>
                 {editingItem ? "Update gallery item information" : "Add a new image to the gallery"}
               </DialogDescription>
             </DialogHeader>
-            <form onSubmit={handleSubmit} className="space-y-4">
+            <div className="flex-1 overflow-y-auto pr-2">
+              <form onSubmit={handleSubmit} className="space-y-4">
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
                   <label className="text-sm font-medium">Title</label>
@@ -371,7 +372,7 @@ export default function AdminGalleryPage() {
                       <img
                         src={imagePreview}
                         alt="Preview"
-                        className="w-full h-48 object-cover rounded-lg border"
+                        className="w-full h-32 sm:h-48 object-cover rounded-lg border"
                       />
                       {selectedFile && (
                         <Button
@@ -417,7 +418,8 @@ export default function AdminGalleryPage() {
                   value={formData.description}
                   onChange={(e) => setFormData({ ...formData, description: e.target.value })}
                   placeholder="Image description..."
-                  rows={3}
+                  rows={2}
+                  className="resize-none"
                 />
               </div>
               <div className="flex items-center space-x-2">
@@ -430,7 +432,7 @@ export default function AdminGalleryPage() {
                   Featured Image
                 </label>
               </div>
-              <div className="flex gap-2 pt-4">
+              <div className="flex gap-2 pt-4 sticky bottom-0 bg-background border-t mt-4 -mx-2 px-2 py-4">
                 <Button type="submit" disabled={isUploading}>
                   {isUploading ? "Uploading..." : editingItem ? "Update Image" : "Add Image"}
                 </Button>
@@ -439,6 +441,7 @@ export default function AdminGalleryPage() {
                 </Button>
               </div>
             </form>
+            </div>
           </DialogContent>
         </Dialog>
         </div>

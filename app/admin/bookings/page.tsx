@@ -472,7 +472,7 @@ export default function AdminBookingsPage() {
 
       {/* Détails de la réservation */}
       <Dialog open={isDetailsOpen} onOpenChange={setIsDetailsOpen}>
-        <DialogContent className="max-w-2xl mx-4 sm:mx-0">
+        <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto mx-4 sm:mx-0">
           <DialogHeader>
             <DialogTitle>Détails de la réservation #{selectedBooking?.id}</DialogTitle>
             <DialogDescription>
