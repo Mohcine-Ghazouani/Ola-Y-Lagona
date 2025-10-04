@@ -1,13 +1,13 @@
 "use client"
 
-import { useState, useEffect } from "react"
+import { useState, useEffect, useRef } from "react"
 import { motion } from "framer-motion"
 import { Navigation } from "@/components/navigation"
 import { Button } from "@/components/ui/button"
 import { Badge } from "@/components/ui/badge"
 import { Skeleton } from "@/components/ui/skeleton"
 import { Dialog, DialogContent, DialogTrigger } from "@/components/ui/dialog"
-import { Camera, Filter, Star } from "lucide-react"
+import { Camera, Filter, Star, ChevronLeft, ChevronRight, Play, Pause, X } from "lucide-react"
 
 interface GalleryItem {
   id: number
@@ -32,6 +32,12 @@ export default function GalleryPage() {
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState<string | null>(null)
   const [selectedCategory, setSelectedCategory] = useState("all")
+  const [currentImageIndex, setCurrentImageIndex] = useState(0)
+  const [isDialogOpen, setIsDialogOpen] = useState(false)
+  const [isPlaying, setIsPlaying] = useState(true)
+  const [progress, setProgress] = useState(0)
+  const intervalRef = useRef<NodeJS.Timeout | null>(null)
+  const progressIntervalRef = useRef<NodeJS.Timeout | null>(null)
 
   useEffect(() => {
     fetchGallery()
@@ -53,6 +59,102 @@ export default function GalleryPage() {
 
   const getCategoryLabel = (category: string) =>
     categories.find((cat) => cat.value === category)?.label || category
+
+  // Navigation functions
+  const goToNext = () => {
+    setCurrentImageIndex((prev) => (prev + 1) % gallery.length)
+    setProgress(0)
+  }
+
+  const goToPrevious = () => {
+    setCurrentImageIndex((prev) => (prev - 1 + gallery.length) % gallery.length)
+    setProgress(0)
+  }
+
+  const openDialog = (index: number) => {
+    setCurrentImageIndex(index)
+    setIsDialogOpen(true)
+    setProgress(0)
+    setIsPlaying(true)
+  }
+
+  const closeDialog = () => {
+    setIsDialogOpen(false)
+    setIsPlaying(false)
+    setProgress(0)
+    if (intervalRef.current) clearInterval(intervalRef.current)
+    if (progressIntervalRef.current) clearInterval(progressIntervalRef.current)
+  }
+
+  // Timer functions
+  const startTimer = () => {
+    if (intervalRef.current) clearInterval(intervalRef.current)
+    if (progressIntervalRef.current) clearInterval(progressIntervalRef.current)
+    
+    setProgress(0)
+    
+    // Progress bar animation (3 seconds)
+    progressIntervalRef.current = setInterval(() => {
+      setProgress((prev) => {
+        if (prev >= 100) {
+          return 0
+        }
+        return prev + (100 / 30) // 30 updates per 3 seconds
+      })
+    }, 100)
+
+    // Auto next image (3 seconds)
+    intervalRef.current = setInterval(() => {
+      goToNext()
+    }, 3000)
+  }
+
+  const pauseTimer = () => {
+    setIsPlaying(false)
+    if (intervalRef.current) clearInterval(intervalRef.current)
+    if (progressIntervalRef.current) clearInterval(progressIntervalRef.current)
+  }
+
+  const resumeTimer = () => {
+    setIsPlaying(true)
+    startTimer()
+  }
+
+  // Start timer when dialog opens
+  useEffect(() => {
+    if (isDialogOpen && isPlaying) {
+      startTimer()
+    }
+    return () => {
+      if (intervalRef.current) clearInterval(intervalRef.current)
+      if (progressIntervalRef.current) clearInterval(progressIntervalRef.current)
+    }
+  }, [isDialogOpen, isPlaying, currentImageIndex])
+
+  // Keyboard navigation
+  useEffect(() => {
+    const handleKeyPress = (e: KeyboardEvent) => {
+      if (!isDialogOpen) return
+      
+      if (e.key === 'ArrowLeft') {
+        goToPrevious()
+      } else if (e.key === 'ArrowRight') {
+        goToNext()
+      } else if (e.key === ' ') {
+        e.preventDefault()
+        if (isPlaying) {
+          pauseTimer()
+        } else {
+          resumeTimer()
+        }
+      } else if (e.key === 'Escape') {
+        closeDialog()
+      }
+    }
+
+    window.addEventListener('keydown', handleKeyPress)
+    return () => window.removeEventListener('keydown', handleKeyPress)
+  }, [isDialogOpen, isPlaying])
 
   return (
     <div className="min-h-screen bg-background">
@@ -127,41 +229,29 @@ export default function GalleryPage() {
             layout
             className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4"
           >
-            {gallery.map((item) => (
-              <Dialog key={item.id}>
-                <DialogTrigger asChild>
-                  <motion.div
-                    whileHover={{ scale: 1.05 }}
-                    whileTap={{ scale: 0.97 }}
-                    className="relative cursor-pointer overflow-hidden rounded-xl shadow-lg group"
-                  >
-                    <img
-                      src={item.imageUrl}
-                      alt={item.title}
-                      className="w-full aspect-square object-cover transition-transform duration-500 group-hover:scale-110"
-                    />
-                    <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-black/10 to-transparent opacity-0 group-hover:opacity-100 transition" />
-                    {item.isFeatured && (
-                      <Badge className="absolute top-2 right-2 bg-yellow-500 text-white">
-                        <Star className="h-3 w-3 mr-1" /> Featured
-                      </Badge>
-                    )}
-                    <div className="absolute bottom-2 left-2 text-white">
-                      <h3 className="font-bold text-sm">{item.title}</h3>
-                    </div>
-                  </motion.div>
-                </DialogTrigger>
-                <DialogContent className="max-w-5xl">
-                  <img
-                    src={item.imageUrl}
-                    alt={item.title}
-                    className="w-full rounded-lg max-h-[80vh] object-contain"
-                  />
-                  {item.description && (
-                    <p className="text-muted-foreground mt-4">{item.description}</p>
-                  )}
-                </DialogContent>
-              </Dialog>
+            {gallery.map((item, index) => (
+              <motion.div
+                key={item.id}
+                whileHover={{ scale: 1.05 }}
+                whileTap={{ scale: 0.97 }}
+                className="relative cursor-pointer overflow-hidden rounded-xl shadow-lg group"
+                onClick={() => openDialog(index)}
+              >
+                <img
+                  src={item.imageUrl}
+                  alt={item.title}
+                  className="w-full aspect-square object-cover transition-transform duration-500 group-hover:scale-110"
+                />
+                <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-black/10 to-transparent opacity-0 group-hover:opacity-100 transition" />
+                {item.isFeatured && (
+                  <Badge className="absolute top-2 right-2 bg-yellow-500 text-white">
+                    <Star className="h-3 w-3 mr-1" /> Featured
+                  </Badge>
+                )}
+                <div className="absolute bottom-2 left-2 text-white">
+                  <h3 className="font-bold text-sm">{item.title}</h3>
+                </div>
+              </motion.div>
             ))}
           </motion.div>
         )}
@@ -194,6 +284,83 @@ export default function GalleryPage() {
       <footer className="bg-card border-t py-6 text-center text-muted-foreground text-sm">
         © 2024 Kite Dakhla. All rights reserved.
       </footer>
+
+      {/* Gallery Dialog */}
+      <Dialog open={isDialogOpen} onOpenChange={closeDialog}>
+        <DialogContent className="w-[80vh] h-[80vh] max-w-[80vh] max-h-[80vh] p-0 overflow-hidden [&>button]:hidden">
+          <div className="w-full h-full relative group">
+            {/* Progress Bar */}
+            <div className="absolute top-0 left-0 right-0 h-1 bg-black/20 z-20">
+              <div 
+                className="h-full bg-white transition-all duration-100 ease-linear"
+                style={{ width: `${progress}%` }}
+              />
+            </div>
+
+            {/* Image Counter - Always visible */}
+            <div className="absolute top-4 left-4 bg-black/50 text-white px-2 py-1 rounded text-sm z-20">
+              {currentImageIndex + 1} / {gallery.length}
+            </div>
+
+            {/* Play/Pause Button - Hover only */}
+            <Button
+              variant="ghost"
+              size="sm"
+              className="absolute top-4 right-16 bg-black/50 hover:bg-black/70 text-white z-20 opacity-0 group-hover:opacity-100 transition-opacity duration-300"
+              onClick={isPlaying ? pauseTimer : resumeTimer}
+            >
+              {isPlaying ? <Pause className="h-4 w-4" /> : <Play className="h-4 w-4" />}
+            </Button>
+
+            {/* Close Button - Hover only */}
+            <Button
+              variant="ghost"
+              size="sm"
+              className="absolute top-4 right-4 bg-black/50 hover:bg-black/70 text-white z-20 opacity-0 group-hover:opacity-100 transition-opacity duration-300"
+              onClick={closeDialog}
+            >
+              <X className="h-4 w-4" />
+            </Button>
+
+            {/* Navigation Buttons - Hover only */}
+            <Button
+              variant="ghost"
+              size="sm"
+              className="absolute left-4 top-1/2 -translate-y-1/2 bg-black/50 hover:bg-black/70 text-white z-20 opacity-0 group-hover:opacity-100 transition-opacity duration-300"
+              onClick={goToPrevious}
+            >
+              <ChevronLeft className="h-6 w-6" />
+            </Button>
+
+            <Button
+              variant="ghost"
+              size="sm"
+              className="absolute right-4 top-1/2 -translate-y-1/2 bg-black/50 hover:bg-black/70 text-white z-20 opacity-0 group-hover:opacity-100 transition-opacity duration-300"
+              onClick={goToNext}
+            >
+              <ChevronRight className="h-6 w-6" />
+            </Button>
+
+            {/* Image */}
+            <img
+              src={gallery[currentImageIndex]?.imageUrl}
+              alt={gallery[currentImageIndex]?.title}
+              className="w-full h-full rounded-lg object-cover"
+            />
+
+            {/* Description Overlay */}
+            {gallery[currentImageIndex]?.description && (
+              <div className="absolute inset-0 bg-black/0 group-hover:bg-black/60 transition-all duration-300 rounded-lg flex items-end justify-center">
+                <div className="w-full p-4 transform translate-y-full group-hover:translate-y-0 transition-transform duration-300">
+                  <p className="text-white text-sm text-center opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                    {gallery[currentImageIndex]?.description}
+                  </p>
+                </div>
+              </div>
+            )}
+          </div>
+        </DialogContent>
+      </Dialog>
     </div>
   )
 }
