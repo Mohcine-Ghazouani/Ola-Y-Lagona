@@ -11,7 +11,7 @@ import "./globals.css"
 
 export const metadata: Metadata = {
   icons: {
-    icon: "/meta_logo.png",
+    icon: "/logo.png",
   },
   title: "Ola Y Lagona",
   description:
