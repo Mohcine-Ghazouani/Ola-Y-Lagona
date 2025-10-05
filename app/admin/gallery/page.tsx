@@ -447,62 +447,74 @@ export default function AdminGalleryPage() {
         </div>
       </div>
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 sm:gap-6">
+      <div className="grid grid-cols-1 sm:grid-cols-1 lg:grid-cols-1 xl:grid-cols-2 gap-4 sm:gap-6">
         {loading
           ? [...Array(8)].map((_, index) => (
               <Card key={index}>
-                <CardHeader className="p-0">
-                  <Skeleton className="h-48 w-full rounded-t-lg" />
-                </CardHeader>
-                <CardContent className="p-4">
-                  <Skeleton className="h-5 w-3/4 mb-2" />
-                  <Skeleton className="h-4 w-1/2 mb-4" />
-                  <div className="flex gap-2">
-                    <Skeleton className="h-8 w-16" />
-                    <Skeleton className="h-8 w-16" />
+                <CardContent className="p-0">
+                  <div className="flex h-48">
+                    <Skeleton className="w-1/2 h-full" />
+                    <div className="w-1/2 p-4 flex flex-col justify-between">
+                      <div>
+                        <Skeleton className="h-5 w-3/4 mb-2" />
+                        <Skeleton className="h-4 w-1/3 mb-3" />
+                        <Skeleton className="h-4 w-full mb-2" />
+                        <Skeleton className="h-4 w-2/3" />
+                      </div>
+                      <div className="flex flex-col gap-2">
+                        <Skeleton className="h-8 w-full" />
+                        <Skeleton className="h-8 w-full" />
+                      </div>
+                    </div>
                   </div>
                 </CardContent>
               </Card>
             ))
           : galleryItems.map((item) => (
               <Card key={item.id} className="overflow-hidden">
-                <CardHeader className="p-0 relative">
-                  <img
-                    src={item.imageUrl || "/placeholder.svg"}
-                    alt={item.title}
-                    className="h-48 w-full object-cover"
-                  />
-                  {item.isFeatured && (
-                    <div className="absolute top-2 right-2 bg-yellow-500 text-white p-1 rounded-full">
-                      <Star className="h-4 w-4" />
+                <CardContent className="">
+                  <div className="flex h-48">
+                    <div className="relative w-1/2 flex-shrink-0">
+                      <img
+                        src={item.imageUrl || "/placeholder.svg"}
+                        alt={item.title}
+                        className="w-full h-full object-cover"
+                      />
+                      {item.isFeatured && (
+                        <div className="absolute top-2 right-2 bg-yellow-500 text-white p-1 rounded">
+                          <Star className="h-3.5 w-3.5" />
+                        </div>
+                      )}
                     </div>
-                  )}
-                </CardHeader>
-                <CardContent className="p-4">
-                  <CardTitle className="text-lg mb-1">{item.title}</CardTitle>
-                  <CardDescription className="mb-2 capitalize">{item.category.replace("-", " ")}</CardDescription>
-                  {item.description && (
-                    <p className="text-sm text-muted-foreground mb-4 line-clamp-2">{item.description}</p>
-                  )}
-                  <div className="flex flex-wrap gap-1 sm:gap-2">
-                    <Button 
-                      size="sm" 
-                      variant="outline" 
-                      onClick={() => handleEdit(item)}
-                      className="flex-1 sm:flex-none"
-                    >
-                      <Edit className="h-4 w-4 sm:mr-1" />
-                      <span className="hidden sm:inline">Edit</span>
-                    </Button>
-                    <Button 
-                      size="sm" 
-                      variant="destructive" 
-                      onClick={() => handleDelete(item.id)}
-                      className="flex-1 sm:flex-none"
-                    >
-                      <Trash2 className="h-4 w-4 sm:mr-1" />
-                      <span className="hidden sm:inline">Delete</span>
-                    </Button>
+                    <div className="w-1/2 p-4 flex flex-col justify-between">
+                      <div>
+                        <CardTitle className="text-lg mb-1 truncate" title={item.title}>{item.title}</CardTitle>
+                        <CardDescription className="mb-2 capitalize truncate">{item.category.replace("-", " ")}</CardDescription>
+                        {item.description && (
+                          <p className="text-sm text-muted-foreground mb-3 line-clamp-2">{item.description}</p>
+                        )}
+                      </div>
+                      <div className="flex flex-col gap-2">
+                        <Button 
+                          size="sm" 
+                          variant="outline" 
+                          onClick={() => handleEdit(item)}
+                          className="w-full"
+                        >
+                          <Edit className="h-4 w-4 mr-1" />
+                          Edit
+                        </Button>
+                        <Button 
+                          size="sm" 
+                          variant="destructive" 
+                          onClick={() => handleDelete(item.id)}
+                          className="w-full"
+                        >
+                          <Trash2 className="h-4 w-4 mr-1" />
+                          Delete
+                        </Button>
+                      </div>
+                    </div>
                   </div>
                 </CardContent>
               </Card>
