@@ -478,7 +478,7 @@ export default function AdminGalleryPage() {
                       <img
                         src={item.imageUrl || "/placeholder.svg"}
                         alt={item.title}
-                        className="w-full h-full object-cover"
+                        className="w-full h-full object-cover rounded-md"
                       />
                       {item.isFeatured && (
                         <div className="absolute top-2 right-2 bg-yellow-500 text-white p-1 rounded">
