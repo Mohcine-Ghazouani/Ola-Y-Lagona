@@ -7,6 +7,7 @@ import { Button } from "@/components/ui/button"
 import { cn } from "@/lib/utils"
 import { LayoutDashboard, BookOpen, Activity, Images, MessageSquare, Users, Settings, LogOut, Wind, Calendar, Menu, X } from "lucide-react"
 import { useState } from "react"
+import { ThemeToggle } from "@/components/theme-toggle"
 
 const navigation = [
   { name: "Dashboard", href: "/admin", icon: LayoutDashboard },
@@ -110,6 +111,7 @@ export function AdminSidebar() {
             <p className="text-sm font-medium">Admin User</p>
             <p className="text-xs text-muted-foreground">admin@kitedakhla.com</p>
           </div>
+
           <div className="flex gap-2">
             <Link href="/" className="flex-1" onClick={closeMobileMenu}>
               <Button variant="outline" size="sm" className="w-full bg-transparent">
@@ -117,9 +119,13 @@ export function AdminSidebar() {
                 <span className="sm:hidden">Site</span>
               </Button>
             </Link>
+            {/* Theme Toggle */}
+            <div className="justify-center">
+              <ThemeToggle />
+            </div>
             <Link href="/login" className="flex-1" onClick={closeMobileMenu}>
               <Button variant="outline" size="sm" className="w-full bg-transparent">
-                <LogOut className="h-4 w-4" />
+                <LogOut className="h-4 w-4" />Logout
               </Button>
             </Link>
           </div>

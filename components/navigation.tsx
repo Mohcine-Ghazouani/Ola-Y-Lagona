@@ -5,6 +5,7 @@ import { useState } from "react"
 import { Button } from "@/components/ui/button"
 import { useAuth } from "@/hooks/use-auth"
 import { Menu, X, Wind } from "lucide-react"
+import { ThemeToggle } from "@/components/theme-toggle"
 
 export function Navigation() {
   const [isOpen, setIsOpen] = useState(false)
@@ -44,32 +45,35 @@ export function Navigation() {
               Contact
             </Link>
 
-            {user ? (
-              <div className="flex items-center space-x-4">
-                {user.role === "admin" && (
-                  <Link href="/admin">
+            <div className="flex items-center space-x-2">
+              <ThemeToggle />
+              {user ? (
+                <div className="flex items-center space-x-4">
+                  {user.role === "admin" && (
+                    <Link href="/admin">
+                      <Button variant="outline" size="sm">
+                        Admin
+                      </Button>
+                    </Link>
+                  )}
+                  <span className="text-sm text-muted-foreground">Hi, {user.name}</span>
+                  <Button onClick={handleLogout} variant="outline" size="sm">
+                    Logout
+                  </Button>
+                </div>
+              ) : (
+                <div className="flex items-center space-x-2">
+                  <Link href="/login">
                     <Button variant="outline" size="sm">
-                      Admin
+                      Login
                     </Button>
                   </Link>
-                )}
-                <span className="text-sm text-muted-foreground">Hi, {user.name}</span>
-                <Button onClick={handleLogout} variant="outline" size="sm">
-                  Logout
-                </Button>
-              </div>
-            ) : (
-              <div className="flex items-center space-x-2">
-                <Link href="/login">
-                  <Button variant="outline" size="sm">
-                    Login
-                  </Button>
-                </Link>
-                <Link href="/register">
-                  <Button size="sm">Sign Up</Button>
-                </Link>
-              </div>
-            )}
+                  <Link href="/register">
+                    <Button size="sm">Sign Up</Button>
+                  </Link>
+                </div>
+              )}
+            </div>
           </div>
 
           {/* Mobile menu button */}
@@ -120,34 +124,39 @@ export function Navigation() {
                 Contact
               </Link>
 
-              {user ? (
-                <div className="px-3 py-2 space-y-2">
-                  {user.role === "admin" && (
-                    <Link href="/admin" onClick={() => setIsOpen(false)}>
+              <div className="px-3 py-2 space-y-2">
+                <div className="flex justify-center">
+                  <ThemeToggle />
+                </div>
+                {user ? (
+                  <>
+                    {user.role === "admin" && (
+                      <Link href="/admin" onClick={() => setIsOpen(false)}>
+                        <Button variant="outline" size="sm" className="w-full bg-transparent">
+                          Admin
+                        </Button>
+                      </Link>
+                    )}
+                    <p className="text-sm text-muted-foreground">Hi, {user.name}</p>
+                    <Button onClick={handleLogout} variant="outline" size="sm" className="w-full bg-transparent">
+                      Logout
+                    </Button>
+                  </>
+                ) : (
+                  <>
+                    <Link href="/login" onClick={() => setIsOpen(false)}>
                       <Button variant="outline" size="sm" className="w-full bg-transparent">
-                        Admin
+                        Login
                       </Button>
                     </Link>
-                  )}
-                  <p className="text-sm text-muted-foreground">Hi, {user.name}</p>
-                  <Button onClick={handleLogout} variant="outline" size="sm" className="w-full bg-transparent">
-                    Logout
-                  </Button>
-                </div>
-              ) : (
-                <div className="px-3 py-2 space-y-2">
-                  <Link href="/login" onClick={() => setIsOpen(false)}>
-                    <Button variant="outline" size="sm" className="w-full bg-transparent">
-                      Login
-                    </Button>
-                  </Link>
-                  <Link href="/register" onClick={() => setIsOpen(false)}>
-                    <Button size="sm" className="w-full">
-                      Sign Up
-                    </Button>
-                  </Link>
-                </div>
-              )}
+                    <Link href="/register" onClick={() => setIsOpen(false)}>
+                      <Button size="sm" className="w-full">
+                        Sign Up
+                      </Button>
+                    </Link>
+                  </>
+                )}
+              </div>
             </div>
           </div>
         )}
