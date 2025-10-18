@@ -328,7 +328,7 @@ export default function HomePage() {
             <div className="space-y-4">
               <div className="flex items-center space-x-2">
                 <Wind className="h-6 w-6 text-primary" />
-                <span className="font-bold text-lg">Kite Dakhla</span>
+                <span className="font-bold text-lg">Ola Y Lagona</span>
               </div>
               <p className="text-muted-foreground text-sm">
                 Morocco's premier kite sports destination offering world-class lessons and unforgettable experiences.
@@ -374,7 +374,7 @@ export default function HomePage() {
           </div>
 
           <div className="border-t mt-8 pt-8 text-center text-sm text-muted-foreground">
-            <p>&copy; 2024 Kite Dakhla. All rights reserved.</p>
+            <p>&copy; 2024 Ola Y Lagona. All rights reserved.</p>
           </div>
         </div>
       </footer>

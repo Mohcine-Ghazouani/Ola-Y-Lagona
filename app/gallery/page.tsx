@@ -282,7 +282,7 @@ export default function GalleryPage() {
 
       {/* Footer */}
       <footer className="bg-card border-t py-6 text-center text-muted-foreground text-sm">
-        © 2024 Kite Dakhla. All rights reserved.
+        © 2024 Ola Y Lagona. All rights reserved.
       </footer>
 
       {/* Gallery Dialog */}

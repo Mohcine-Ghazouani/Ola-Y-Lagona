@@ -24,9 +24,10 @@ export async function POST(request: NextRequest) {
     response.cookies.set("auth-token", result.token!, {
       httpOnly: true,
       secure: process.env.NODE_ENV === "production",
-      sameSite: "lax",
-      path: "/", // ensure cookie is sent to middleware/admin pages
+      sameSite: process.env.NODE_ENV === "production" ? "strict" : "lax",
+      path: "/",
       maxAge: 7 * 24 * 60 * 60, // 7 days
+      domain: process.env.NODE_ENV === "production" ? process.env.COOKIE_DOMAIN : undefined,
     })
 
     return response

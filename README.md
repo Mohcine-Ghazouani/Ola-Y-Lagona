@@ -1,4 +1,4 @@
-# Hola Laguna
+# Ola Y Lagona
 
 
 
@@ -56,6 +56,22 @@ OPENWEATHER_API_KEY="your-openweathermap-api-key-here"
 # Next.js specific
 NEXT_PUBLIC_APP_URL="http://localhost:3000"
 ```
+
+## Deployment
+
+For production deployment, see the [DEPLOYMENT.md](./DEPLOYMENT.md) guide for detailed instructions.
+
+### Quick Deployment Options:
+
+1. **Traditional Server:** Use `deploy.bat` (Windows) or `deploy.sh` (Linux/Mac)
+2. **Docker:** Use `deploy-docker.bat` (Windows) or `deploy-docker.sh` (Linux/Mac)
+3. **Cloud Platforms:** Vercel, Railway, DigitalOcean App Platform
+
+### Production Checklist:
+- [ ] Change JWT_SECRET to a strong random string
+- [ ] Set up HTTPS/SSL certificate
+- [ ] Configure production database
+- [ ] Set up monitoring and backups
 
 
 ## Running the Application

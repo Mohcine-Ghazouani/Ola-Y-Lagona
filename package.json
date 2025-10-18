@@ -1,5 +1,5 @@
 {
-  "name": "my-v0-project",
+  "name": "ola-y-lagona",
   "version": "0.1.0",
   "private": true,
   "scripts": {
@@ -7,12 +7,19 @@
     "dev": "next dev",
     "lint": "next lint",
     "start": "next start",
+    "postbuild": "prisma generate",
     "db:generate": "prisma generate",
     "db:push": "prisma db push",
     "db:seed": "tsx prisma/seed.ts",
     "db:setup": "node scripts/setup-prisma-database.js",
     "db:reset": "node -e \"require('fs').existsSync('prisma/kite-sports.db')&&require('fs').unlinkSync('prisma/kite-sports.db')\" && prisma db push && tsx prisma/seed.ts",
-    "db:studio": "prisma studio"
+    "db:studio": "prisma studio",
+    "db:migrate": "prisma migrate deploy",
+    "db:migrate:dev": "prisma migrate dev",
+    "deploy:build": "npm run db:generate && npm run build",
+    "deploy:start": "npm run db:migrate && npm start",
+    "cloudinary:setup": "node scripts/setup-cloudinary-preset.js",
+    "images:migrate": "node scripts/migrate-images-to-cloudinary.js"
   },
   "dependencies": {
     "@hookform/resolvers": "^3.10.0",
@@ -46,9 +53,11 @@
     "@radix-ui/react-tooltip": "1.1.6",
     "@vercel/analytics": "latest",
     "autoprefixer": "^10.4.20",
+    "aws-sdk": "^2.1691.0",
     "bcryptjs": "^3.0.2",
     "child_process": "latest",
     "class-variance-authority": "^0.7.1",
+    "cloudinary": "^2.7.0",
     "clsx": "^2.1.1",
     "cmdk": "1.0.4",
     "date-fns": "4.1.0",

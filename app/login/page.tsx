@@ -72,7 +72,7 @@ export default function LoginPage() {
         <CardHeader className="text-center">
           <div className="flex items-center justify-center mb-4">
             <Wind className="h-8 w-8 text-primary mr-2" />
-            <span className="text-2xl font-bold">Kite Dakhla</span>
+            <span className="text-2xl font-bold">Ola Y Lagona</span>
           </div>
           <CardTitle>Welcome Back</CardTitle>
           <CardDescription>Sign in to your account to continue</CardDescription>

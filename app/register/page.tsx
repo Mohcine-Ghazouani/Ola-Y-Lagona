@@ -108,7 +108,7 @@ export default function RegisterPage() {
       if (result.success) {
         toast({
           title: "Account Created!",
-          description: "Welcome to Kite Dakhla. You have been successfully registered.",
+          description: "Welcome to Ola Y Lagona. You have been successfully registered.",
         })
         router.push("/")
       } else {
@@ -135,7 +135,7 @@ export default function RegisterPage() {
         <CardHeader className="text-center">
           <div className="flex items-center justify-center mb-4">
             <Wind className="h-8 w-8 text-primary mr-2" />
-            <span className="text-2xl font-bold">Kite Dakhla</span>
+            <span className="text-2xl font-bold">Ola Y Lagona</span>
           </div>
           <CardTitle>Create Account</CardTitle>
           <CardDescription>Join us for amazing kite sports adventures</CardDescription>

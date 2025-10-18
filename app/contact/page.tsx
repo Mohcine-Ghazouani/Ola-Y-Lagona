@@ -229,7 +229,7 @@ export default function ContactPage() {
 
               <Card>
                 <CardHeader>
-                  <CardTitle>Why Choose Kite Dakhla?</CardTitle>
+                  <CardTitle>Why Choose Ola Y Lagona?</CardTitle>
                 </CardHeader>
                 <CardContent className="space-y-4">
                   <div className="space-y-3">
@@ -303,7 +303,7 @@ export default function ContactPage() {
       <footer className="bg-card border-t">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
           <div className="text-center text-sm text-muted-foreground">
-            <p>&copy; 2024 Kite Dakhla. All rights reserved.</p>
+            <p>&copy; 2024 Ola Y Lagona. All rights reserved.</p>
           </div>
         </div>
       </footer>
