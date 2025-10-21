@@ -1,6 +1,6 @@
 import { Navigation } from "@/components/navigation"
-import { WeatherWidget } from "@/components/weather-widget"
 import { Button } from "@/components/ui/button"
+import WindguruOfficialEmbed from "@/components/WindguruOfficialEmbed";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
 import Link from "next/link"
@@ -64,9 +64,15 @@ export default function HomePage() {
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent rounded-lg"></div>
               </div>
-              <WeatherWidget />
             </div>
           </div>
+        </div>
+      </section>
+
+      {/* Weather Forecast */}
+      <section className="py-12 bg-card/30">
+        <div className="max-w-7xl h-auto mx-auto px-4 sm:px-6 lg:px-8">
+          <WindguruOfficialEmbed embedUrl="https://www.windguru.cz/widget-fcst-iframe.php?s=6454&m=100&uid=wg_fwdg_6454_100_1760973630770&wj=knots&tj=c&waj=m&tij=cm&odh=0&doh=24&fhours=240&hrsm=2&vt=forecasts&lng=en&idbs=1&p=WINDSPD,GUST,SMER,TMPE,FLHGT,CDC,APCP1s,RATING" />
         </div>
       </section>
 
@@ -151,23 +157,23 @@ export default function HomePage() {
           <div className="grid md:grid-cols-3 gap-8">
             {[
               {
-                name: "Ahmed Benali",
+                name: "ayoub el mansouri",
                 role: "Head Instructor & Founder",
-                experience: "12+ years",
-                specialties: ["Kitesurfing", "Safety Training"],
+                experience: "4+ years",
+                specialties: ["Kitesurfing", "Kite Buggy", "Landboarding"],
                 image: "/professional-kite-instructor-portrait.jpg",
               },
               {
-                name: "Sarah Martinez",
+                name: "Ahmed Benali",
                 role: "Kitesurfing Specialist",
-                experience: "8+ years",
+                experience: "3+ years",
                 specialties: ["Beginner Lessons", "Advanced Tricks"],
-                image: "/female-kite-instructor-portrait.jpg",
+                image: "/kite-instructor-portrait.jpg",
               },
               {
                 name: "Omar Idrissi",
-                role: "Land Sports Expert",
-                experience: "10+ years",
+                role: "Landboarding Expert",
+                experience: "5+ years",
                 specialties: ["Kite Buggy", "Landboarding"],
                 image: "/kite-buggy-instructor-portrait.jpg",
               },
@@ -374,7 +380,7 @@ export default function HomePage() {
           </div>
 
           <div className="border-t mt-8 pt-8 text-center text-sm text-muted-foreground">
-            <p>&copy; 2024 Ola Y Lagona. All rights reserved.</p>
+            <p>&copy;  Ola Y Lagona. All rights reserved.</p>
           </div>
         </div>
       </footer>

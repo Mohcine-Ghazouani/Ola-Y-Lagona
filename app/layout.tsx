@@ -14,7 +14,7 @@ export const metadata: Metadata = {
   icons: {
     icon: "/logo.png",
   },
-  title: "Ola Y Lagona",
+  title: "Ola Y Lagona",
   description:
     "Experience the best kitesurfing, kite buggy, landboarding and paddleboard lessons in Dakhla, Morocco. Professional instructors and equipment.",
   generator: "v0.app",
@@ -34,12 +34,10 @@ export default function RootLayout({
           enableSystem
           disableTransitionOnChange
         >
-          <Suspense fallback={null}>
-            <AuthProvider>
-              {children}
-              <Toaster />
-            </AuthProvider>
-          </Suspense>
+          <AuthProvider>
+            {children}
+            <Toaster />
+          </AuthProvider>
         </ThemeProvider>
         <Analytics />
       </body>

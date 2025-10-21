@@ -1,10 +1,12 @@
-import { NextResponse } from "next/server"
+import { NextRequest, NextResponse } from "next/server"
 import { prisma } from "@/lib/prisma"
 
-export async function GET(request: Request) {
+// Force dynamic rendering
+export const dynamic = 'force-dynamic'
+
+export async function GET(request: NextRequest) {
   try {
-    const { searchParams } = new URL(request.url)
-    const category = searchParams.get("category")
+    const category = request.nextUrl.searchParams.get("category")
 
     const gallery = await prisma.gallery.findMany({
       where: category && category !== "all" ? { category: category as any } : {},

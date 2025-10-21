@@ -23,6 +23,16 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined)
 export function useAuth() {
   const context = useContext(AuthContext)
   if (context === undefined) {
+    // During SSR, return a default context to prevent errors
+    if (typeof window === 'undefined') {
+      return {
+        user: null,
+        loading: false,
+        login: async () => ({ success: false, error: 'Not available during SSR' }),
+        register: async () => ({ success: false, error: 'Not available during SSR' }),
+        logout: async () => {}
+      }
+    }
     throw new Error("useAuth must be used within an AuthProvider")
   }
   return context
@@ -33,7 +43,12 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [loading, setLoading] = useState(true)
 
   useEffect(() => {
-    checkAuth()
+    // Only run on client side
+    if (typeof window !== 'undefined') {
+      checkAuth()
+    } else {
+      setLoading(false)
+    }
   }, [])
 
   const checkAuth = async () => {
