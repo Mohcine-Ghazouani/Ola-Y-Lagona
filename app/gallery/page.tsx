@@ -161,7 +161,7 @@ export default function GalleryPage() {
       <Navigation />
 
       {/* Hero Section avec fond vidéo */}
-      <section className="relative h-[70vh] w-full overflow-hidden">
+      <section className="relative h-[80vh] w-full overflow-hidden">
         <video
           autoPlay
           loop
@@ -169,7 +169,7 @@ export default function GalleryPage() {
           playsInline
           className="absolute inset-0 w-full h-full object-cover"
         >
-          <source src="/videos/kite.mp4" type="video/mp4" />
+          <source src="/videos/HERO VIDEO.mp4" type="video/mp4" />
         </video>
         <div className="absolute inset-0 bg-black/50 flex flex-col items-center justify-center text-center text-white p-6">
           <motion.h1

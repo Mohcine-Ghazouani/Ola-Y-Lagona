@@ -17,19 +17,13 @@ const navigation = [
   { name: "Gallery", href: "/admin/gallery", icon: Images },
   { name: "Contacts", href: "/admin/contacts", icon: MessageSquare },
   { name: "Users", href: "/admin/users", icon: Users },
-  // { name: "Settings", href: "/admin/settings", icon: Settings },
 ]
 
 export function AdminSidebar() {
   const pathname = usePathname()
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
 
-  // Désactiver temporairement l'authentification pour le développement
-  // const { user, logout } = useAuth()
 
-  // const handleLogout = async () => {
-  //   await logout()
-  // }
 
   const toggleMobileMenu = () => {
     setIsMobileMenuOpen(!isMobileMenuOpen)
@@ -81,7 +75,7 @@ export function AdminSidebar() {
 
         <div className="p-6">
           <Link href="/admin" className="flex items-center space-x-2" onClick={closeMobileMenu}>
-            <img src="/logo.png" alt="Ola Y Lagona" width={52} />
+            <img src="/logo.png" alt="Ola Y Lagona" width={42} />
             <div>
               <span className="font-bold text-lg">Ola Y Lagona</span>
               <p className="text-xs text-muted-foreground">Admin Panel</p>

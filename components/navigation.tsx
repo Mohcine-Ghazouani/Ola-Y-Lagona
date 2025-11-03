@@ -23,7 +23,7 @@ export function Navigation() {
           {/* Logo */}
           <Link href="/" className="flex items-center space-x-2">
             {/* <Wind className="h-8 w-8 text-primary" /> */}
-            <img src="/logo.png" alt="Ola Y Lagona" width={52} />
+            <img src="/logo.png" alt="Ola Y Lagona" className="h-9 w-9" />
             <span className="font-bold text-xl text-foreground">Ola Y Lagona</span>
           </Link>
 

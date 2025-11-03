@@ -6,7 +6,7 @@ import { Analytics } from "@vercel/analytics/next"
 import { AuthProvider } from "@/hooks/use-auth"
 import { ThemeProvider } from "@/components/theme-provider"
 import { Toaster } from "@/components/ui/toaster"
-import { Suspense } from "react"
+
 import "./globals.css"
 
 
@@ -17,7 +17,6 @@ export const metadata: Metadata = {
   title: "Ola Y Lagona",
   description:
     "Experience the best kitesurfing, kite buggy, landboarding and paddleboard lessons in Dakhla, Morocco. Professional instructors and equipment.",
-  generator: "v0.app",
 }
 
 export default function RootLayout({

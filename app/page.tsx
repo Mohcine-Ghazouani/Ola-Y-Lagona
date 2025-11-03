@@ -12,7 +12,7 @@ export default function HomePage() {
       <Navigation />
 
       {/* Hero Section */}
-      <section className="relative bg-gradient-to-br from-primary/10 via-background to-secondary/10 py-20 lg:py-32">
+      <section className="relative  from-primary/10 via-background to-secondary/10 py-4 lg:py-8">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid lg:grid-cols-2 gap-12 items-center">
             <div className="space-y-8">
@@ -58,7 +58,7 @@ export default function HomePage() {
             <div className="space-y-6">
               <div className="relative">
                 <img
-                  src="/kitesurfing-in-dakhla-lagoon-with-blue-water-and-d.jpg"
+                  src="/kitesurfing-in-dakhla.jpg"
                   alt="Kitesurfing in Dakhla"
                   className="rounded-lg shadow-2xl w-full"
                 />
@@ -70,14 +70,14 @@ export default function HomePage() {
       </section>
 
       {/* Weather Forecast */}
-      <section className="py-12 bg-card/30">
+      <section className="py-8 ">
         <div className="max-w-7xl h-auto mx-auto px-4 sm:px-6 lg:px-8">
           <WindguruOfficialEmbed embedUrl="https://www.windguru.cz/widget-fcst-iframe.php?s=6454&m=100&uid=wg_fwdg_6454_100_1760973630770&wj=knots&tj=c&waj=m&tij=cm&odh=0&doh=24&fhours=240&hrsm=2&vt=forecasts&lng=en&idbs=1&p=WINDSPD,GUST,SMER,TMPE,FLHGT,CDC,APCP1s,RATING" />
         </div>
       </section>
 
       {/* Sports Overview */}
-      <section className="py-20 bg-card/50">
+      <section className="py-8 ">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center space-y-4 mb-16">
             <h2 className="text-3xl lg:text-4xl font-bold">Our Kite Sports</h2>
@@ -145,8 +145,8 @@ export default function HomePage() {
       </section>
 
       {/* Team Section */}
-      <section className="py-20">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <section className="py-8">
+        <div className="max-w-7xl mx-auto px-2 sm:px-6 lg:px-8">
           <div className="text-center space-y-4 mb-16">
             <h2 className="text-3xl lg:text-4xl font-bold">Meet Our Team</h2>
             <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
@@ -154,45 +154,38 @@ export default function HomePage() {
             </p>
           </div>
 
-          <div className="grid md:grid-cols-3 gap-8">
+          <div className="grid md:grid-cols-2 gap-6">
             {[
               {
-                name: "ayoub el mansouri",
-                role: "Head Instructor & Founder",
-                experience: "4+ years",
-                specialties: ["Kitesurfing", "Kite Buggy", "Landboarding"],
-                image: "/professional-kite-instructor-portrait.jpg",
+                name: "Ayoub Drissi",
+                role: "surf instructor Iko certificate level 2",
+                experience: "7+ years",
+                specialties: ["Kitesurfing"],
+                image: "/kite-buggy-instructor-portrait.webp",
               },
               {
-                name: "Ahmed Benali",
-                role: "Kitesurfing Specialist",
+                name: "Oussama Haddach",
+                role: "Kitesurf, wingfoil instructor IKO CERTIFICATE LEVEL 2",
                 experience: "3+ years",
-                specialties: ["Beginner Lessons", "Advanced Tricks"],
-                image: "/kite-instructor-portrait.jpg",
-              },
-              {
-                name: "Omar Idrissi",
-                role: "Landboarding Expert",
-                experience: "5+ years",
-                specialties: ["Kite Buggy", "Landboarding"],
-                image: "/kite-buggy-instructor-portrait.jpg",
+                specialties: ["Kitesurfing", "Wing Foil"],
+                image: "/kite-instructor-portrait.webp",
               },
             ].map((member, index) => (
               <Card key={index} className="text-center">
-                <CardContent className="pt-6">
-                  <div className="relative w-32 h-32 mx-auto mb-4">
+                <CardContent className="">
+                  <div className="relative w-40 h-40 mx-auto mb-2">
                     <img
                       src={member.image || "/placeholder.svg"}
                       alt={member.name}
-                      className="w-full h-full object-cover rounded-full"
+                      className="w-full h-full object-cover rounded-xl"
                     />
                   </div>
                   <h3 className="text-xl font-semibold mb-1">{member.name}</h3>
                   <p className="text-primary font-medium mb-2">{member.role}</p>
-                  <div className="flex items-center justify-center gap-2 mb-3">
+                  {/* <div className="flex items-center justify-center gap-2 mb-3">
                     <Clock className="h-4 w-4 text-muted-foreground" />
                     <span className="text-sm text-muted-foreground">{member.experience}</span>
-                  </div>
+                  </div> */}
                   <div className="flex flex-wrap gap-1 justify-center">
                     {member.specialties.map((specialty, idx) => (
                       <Badge key={idx} variant="outline" className="text-xs">
@@ -208,7 +201,7 @@ export default function HomePage() {
       </section>
 
       {/* Reviews Section */}
-      <section className="py-20 bg-card/50">
+      <section className="py-8">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="text-center space-y-4 mb-16">
             <h2 className="text-3xl lg:text-4xl font-bold">What Our Clients Say</h2>
@@ -275,7 +268,7 @@ export default function HomePage() {
       </section>
 
       {/* Location & Contact */}
-      <section className="py-20">
+      <section className="py-8">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid lg:grid-cols-2 gap-12 items-center">
             <div className="space-y-6">
@@ -329,7 +322,7 @@ export default function HomePage() {
 
       {/* Footer */}
       <footer className="bg-card border-t">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+        <div className="max-w-7xl mx-auto px-4 sm:px-2 lg:px-4 py-8">
           <div className="grid md:grid-cols-4 gap-8">
             <div className="space-y-4">
               <div className="flex items-center space-x-2">

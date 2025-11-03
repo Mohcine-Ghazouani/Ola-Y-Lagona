@@ -3,109 +3,149 @@
 
 @custom-variant dark (&:is(.dark *));
 
+/* --- Brand palette tuned to the logo (wave blue + sun amber) --- */
 :root {
-  /* Updated color tokens to match kite sports design brief */
-  --background: #ffffff;
-  --foreground: #374151;
-  --card: #f0fdf4;
-  --card-foreground: #374151;
+  --background: #f8fafc;            /* slate-50 */
+  --foreground: #0f172a;            /* slate-900 */
+
+  --card: #ffffff;
+  --card-foreground: #0f172a;
+
   --popover: #ffffff;
-  --popover-foreground: #374151;
-  --primary: #15803d;
+  --popover-foreground: #0f172a;
+
+  --primary: #0ea5e9;               /* sky-500 – wave */
   --primary-foreground: #ffffff;
-  --secondary: #84cc16;
-  --secondary-foreground: #374151;
-  --muted: #f0fdf4;
-  --muted-foreground: #374151;
-  --accent: #84cc16;
-  --accent-foreground: #ffffff;
-  --destructive: #be123c;
-  --destructive-foreground: #ffffff;
-  --border: #e5e7eb;
-  --input: #f0fdf4;
-  --ring: rgba(20, 184, 166, 0.5);
-  --chart-1: #15803d;
-  --chart-2: #84cc16;
-  --chart-3: #be123c;
-  --chart-4: #ec4899;
-  --chart-5: #374151;
-  --radius: 0.5rem;
-  --sidebar: #f0fdf4;
-  --sidebar-foreground: #374151;
-  --sidebar-primary: #15803d;
-  --sidebar-primary-foreground: #ffffff;
-  --sidebar-accent: #84cc16;
-  --sidebar-accent-foreground: #374151;
-  --sidebar-border: #e5e7eb;
-  --sidebar-ring: rgba(20, 184, 166, 0.5);
-}
 
-.dark {
-  --background: #0f172a;
-  --foreground: #f1f5f9;
-  --card: #1e293b;
-  --card-foreground: #f1f5f9;
-  --popover: #0f172a;
-  --popover-foreground: #f1f5f9;
-  --primary: #22c55e;
-  --primary-foreground: #0f172a;
-  --secondary: #94a3b8;
-  --secondary-foreground: #f1f5f9;
-  --muted: #1e293b;
-  --muted-foreground: #94a3b8;
-  --accent: #84cc16;
+  --secondary: #0f172a;             /* deep slate for contrast chips */
+  --secondary-foreground: #e2e8f0;
+
+  --muted: #eef2f7;                 /* soft, airy surfaces */
+  --muted-foreground: #475569;
+
+  --accent: #f59e0b;                /* amber-500 – sun */
   --accent-foreground: #0f172a;
+
   --destructive: #ef4444;
-  --destructive-foreground: #f1f5f9;
-  --border: #334155;
-  --input: #1e293b;
-  --ring: rgba(34, 197, 94, 0.3);
-  --chart-1: #22c55e;
-  --chart-2: #84cc16;
-  --chart-3: #ef4444;
-  --chart-4: #ec4899;
-  --chart-5: #94a3b8;
-  --sidebar: #1e293b;
-  --sidebar-foreground: #f1f5f9;
-  --sidebar-primary: #22c55e;
-  --sidebar-primary-foreground: #0f172a;
-  --sidebar-accent: #84cc16;
+  --destructive-foreground: #ffffff;
+
+  --border: #e2e8f0;                /* subtle, modern borders */
+  --input: #ffffff;
+
+  --ring: rgba(14, 165, 233, 0.4);  /* sky glow */
+
+  /* Charts aligned to brand */
+  --chart-1: #0ea5e9;  /* primary blue */
+  --chart-2: #f59e0b;  /* amber */
+  --chart-3: #14b8a6;  /* teal accent */
+  --chart-4: #6366f1;  /* indigo */
+  --chart-5: #94a3b8;  /* slate */
+
+  /* Softer, rounder UI */
+  --radius: 0.75rem;   /* ~12px */
+
+  /* Sidebar */
+  --sidebar: #ffffff;
+  --sidebar-foreground: #0f172a;
+  --sidebar-primary: #0ea5e9;
+  --sidebar-primary-foreground: #ffffff;
+  --sidebar-accent: #f59e0b;
   --sidebar-accent-foreground: #0f172a;
-  --sidebar-border: #334155;
-  --sidebar-ring: rgba(34, 197, 94, 0.3);
+  --sidebar-border: #e2e8f0;
+  --sidebar-ring: rgba(14, 165, 233, 0.35);
 }
 
+/* Dark theme: deep navy with bright sky and warm amber */
+.dark {
+  --background: #0b1220;            /* deep navy */
+  --foreground: #e2e8f0;
+
+  --card: #0f172a;
+  --card-foreground: #e2e8f0;
+
+  --popover: #0b1220;
+  --popover-foreground: #e2e8f0;
+
+  --primary: #38bdf8;               /* sky-400 */
+  --primary-foreground: #0b1220;
+
+  --secondary: #1f2937;             /* gray-800 */
+  --secondary-foreground: #e5e7eb;
+
+  --muted: #111827;
+  --muted-foreground: #9ca3af;
+
+  --accent: #f59e0b;                /* sun still warm at night */
+  --accent-foreground: #0b1220;
+
+  --destructive: #ef4444;
+  --destructive-foreground: #0b1220;
+
+  --border: #1e293b;
+  --input: #0f172a;
+
+  --ring: rgba(56, 189, 248, 0.35);
+
+  --chart-1: #38bdf8;
+  --chart-2: #f59e0b;
+  --chart-3: #2dd4bf;
+  --chart-4: #818cf8;
+  --chart-5: #94a3b8;
+
+  --sidebar: #0f172a;
+  --sidebar-foreground: #e2e8f0;
+  --sidebar-primary: #38bdf8;
+  --sidebar-primary-foreground: #0b1220;
+  --sidebar-accent: #f59e0b;
+  --sidebar-accent-foreground: #0b1220;
+  --sidebar-border: #1e293b;
+  --sidebar-ring: rgba(56, 189, 248, 0.35);
+}
+
+/* Map CSS variables to Tailwind design tokens */
 @theme inline {
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
+
   --color-background: var(--background);
   --color-foreground: var(--foreground);
+
   --color-card: var(--card);
   --color-card-foreground: var(--card-foreground);
+
   --color-popover: var(--popover);
   --color-popover-foreground: var(--popover-foreground);
+
   --color-primary: var(--primary);
   --color-primary-foreground: var(--primary-foreground);
+
   --color-secondary: var(--secondary);
   --color-secondary-foreground: var(--secondary-foreground);
+
   --color-muted: var(--muted);
   --color-muted-foreground: var(--muted-foreground);
+
   --color-accent: var(--accent);
   --color-accent-foreground: var(--accent-foreground);
+
   --color-destructive: var(--destructive);
   --color-destructive-foreground: var(--destructive-foreground);
+
   --color-border: var(--border);
   --color-input: var(--input);
   --color-ring: var(--ring);
+
   --color-chart-1: var(--chart-1);
   --color-chart-2: var(--chart-2);
   --color-chart-3: var(--chart-3);
   --color-chart-4: var(--chart-4);
   --color-chart-5: var(--chart-5);
+
   --radius-sm: calc(var(--radius) - 4px);
   --radius-md: calc(var(--radius) - 2px);
   --radius-lg: var(--radius);
   --radius-xl: calc(var(--radius) + 4px);
+
   --color-sidebar: var(--sidebar);
   --color-sidebar-foreground: var(--sidebar-foreground);
   --color-sidebar-primary: var(--sidebar-primary);
@@ -116,11 +156,27 @@
   --color-sidebar-ring: var(--sidebar-ring);
 }
 
+/* Base + a couple tasteful utilities for a modern feel */
 @layer base {
-  * {
-    @apply border-border outline-ring/50;
+  * { @apply border-border outline-ring/50; }
+  body { @apply bg-background text-foreground antialiased; }
+}
+
+@layer utilities {
+  /* Brand gradient (wave → sun) for headers/CTAs */
+  .bg-brand-gradient {
+    background: linear-gradient(135deg, var(--primary) 0%, #22d3ee 45%, var(--accent) 100%);
   }
-  body {
-    @apply bg-background text-foreground;
+  .text-brand-gradient {
+    background: linear-gradient(135deg, var(--primary), var(--accent));
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+  }
+  /* Subtle glass card */
+  .card-glass {
+    backdrop-filter: saturate(160%) blur(8px);
+    background: color-mix(in oklab, var(--card) 80%, transparent);
+    border: 1px solid color-mix(in oklab, var(--border) 70%, transparent);
   }
 }
