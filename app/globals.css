@@ -3,10 +3,11 @@
 
 @custom-variant dark (&:is(.dark *));
 
-/* --- Brand palette tuned to the logo (wave blue + sun amber) --- */
+/* --- Brand palette (3-color system) --- */
+/* Ocean Blue | Deep Navy | Cool Gray */
 :root {
-  --background: #f8fafc;            /* slate-50 */
-  --foreground: #0f172a;            /* slate-900 */
+  --background: #f8fafc;              /* cool gray-50 */
+  --foreground: #0f172a;              /* deep navy */
 
   --card: #ffffff;
   --card-foreground: #0f172a;
@@ -14,72 +15,70 @@
   --popover: #ffffff;
   --popover-foreground: #0f172a;
 
-  --primary: #0ea5e9;               /* sky-500 – wave */
+  --primary: #0ea5e9;                 /* ocean blue */
   --primary-foreground: #ffffff;
 
-  --secondary: #0f172a;             /* deep slate for contrast chips */
+  --secondary: #0f172a;               /* deep navy */
   --secondary-foreground: #e2e8f0;
 
-  --muted: #eef2f7;                 /* soft, airy surfaces */
+  --muted: #eef2f7;                   /* soft gray */
   --muted-foreground: #475569;
 
-  --accent: #f59e0b;                /* amber-500 – sun */
-  --accent-foreground: #0f172a;
+  --accent: #0ea5e9;                  /* same as primary to keep 3-color rule */
+  --accent-foreground: #ffffff;
 
   --destructive: #ef4444;
   --destructive-foreground: #ffffff;
 
-  --border: #e2e8f0;                /* subtle, modern borders */
+  --border: #e2e8f0;
   --input: #ffffff;
 
-  --ring: rgba(14, 165, 233, 0.4);  /* sky glow */
+  --ring: rgba(14, 165, 233, 0.4);
 
-  /* Charts aligned to brand */
-  --chart-1: #0ea5e9;  /* primary blue */
-  --chart-2: #f59e0b;  /* amber */
-  --chart-3: #14b8a6;  /* teal accent */
-  --chart-4: #6366f1;  /* indigo */
-  --chart-5: #94a3b8;  /* slate */
+  /* Charts aligned to 3-color system */
+  --chart-1: #0ea5e9;  /* blue */
+  --chart-2: #0f172a;  /* navy */
+  --chart-3: #94a3b8;  /* gray */
+  --chart-4: #38bdf8;  /* light blue (extended shade) */
+  --chart-5: #64748b;  /* slate */
 
-  /* Softer, rounder UI */
-  --radius: 0.75rem;   /* ~12px */
+  --radius: 0.75rem;
 
-  /* Sidebar */
   --sidebar: #ffffff;
   --sidebar-foreground: #0f172a;
   --sidebar-primary: #0ea5e9;
   --sidebar-primary-foreground: #ffffff;
-  --sidebar-accent: #f59e0b;
-  --sidebar-accent-foreground: #0f172a;
+  --sidebar-accent: #0f172a;
+  --sidebar-accent-foreground: #e2e8f0;
   --sidebar-border: #e2e8f0;
   --sidebar-ring: rgba(14, 165, 233, 0.35);
 }
 
-/* Dark theme: deep navy with bright sky and warm amber */
+/* Dark mode — navy base + electric blue accents */
 .dark {
-  --background: #0b1220;            /* deep navy */
+  --background: #0b1120;              /* deep navy */
   --foreground: #e2e8f0;
 
   --card: #0f172a;
   --card-foreground: #e2e8f0;
 
-  --popover: #0b1220;
+  --popover: #0b1120;
   --popover-foreground: #e2e8f0;
 
-  --primary: #38bdf8;               /* sky-400 */
-  --primary-foreground: #0b1220;
+  --primary: #38bdf8;                 /* bright ocean */
+  --primary-foreground: #0b1120;
 
-  --secondary: #1f2937;             /* gray-800 */
-  --secondary-foreground: #e5e7eb;
+  --secondary: #1e293b;
+  --secondary-foreground: #e2e8f0;
 
   --muted: #111827;
   --muted-foreground: #9ca3af;
 
-  --accent: #f59e0b;                /* sun still warm at night */
-  --accent-foreground: #0b1220;
+  --accent: #38bdf8;
+  --accent-foreground: #38bdf8;
 
   --destructive: #ef4444;
-  --destructive-foreground: #0b1220;
+  --destructive-foreground: #0b1120;
 
   --border: #1e293b;
   --input: #0f172a;
@@ -87,22 +86,22 @@
   --ring: rgba(56, 189, 248, 0.35);
 
   --chart-1: #38bdf8;
-  --chart-2: #f59e0b;
-  --chart-3: #2dd4bf;
-  --chart-4: #818cf8;
-  --chart-5: #94a3b8;
+  --chart-2: #0ea5e9;
+  --chart-3: #64748b;
+  --chart-4: #94a3b8;
+  --chart-5: #1e293b;
 
   --sidebar: #0f172a;
   --sidebar-foreground: #e2e8f0;
   --sidebar-primary: #38bdf8;
-  --sidebar-primary-foreground: #0b1220;
-  --sidebar-accent: #f59e0b;
-  --sidebar-accent-foreground: #0b1220;
+  --sidebar-primary-foreground: #0b1120;
+  --sidebar-accent: #1e293b;
+  --sidebar-accent-foreground: #e2e8f0;
   --sidebar-border: #1e293b;
   --sidebar-ring: rgba(56, 189, 248, 0.35);
 }
 
-/* Map CSS variables to Tailwind design tokens */
+/* Tailwind token mapping */
 @theme inline {
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
@@ -156,27 +155,29 @@
   --color-sidebar-ring: var(--sidebar-ring);
 }
 
-/* Base + a couple tasteful utilities for a modern feel */
+/* Base */
 @layer base {
   * { @apply border-border outline-ring/50; }
   body { @apply bg-background text-foreground antialiased; }
 }
 
+/* Optional modern utilities */
 @layer utilities {
-  /* Brand gradient (wave → sun) for headers/CTAs */
+  /* Minimal blue gradient */
   .bg-brand-gradient {
-    background: linear-gradient(135deg, var(--primary) 0%, #22d3ee 45%, var(--accent) 100%);
+    background: linear-gradient(135deg, var(--primary) 0%, #38bdf8 100%);
   }
+
   .text-brand-gradient {
-    background: linear-gradient(135deg, var(--primary), var(--accent));
+    background: linear-gradient(135deg, var(--primary), #38bdf8);
     -webkit-background-clip: text;
-    background-clip: text;
     color: transparent;
   }
-  /* Subtle glass card */
+
+  /* Frosted card */
   .card-glass {
-    backdrop-filter: saturate(160%) blur(8px);
-    background: color-mix(in oklab, var(--card) 80%, transparent);
+    backdrop-filter: saturate(150%) blur(10px);
+    background: color-mix(in oklab, var(--card) 85%, transparent);
     border: 1px solid color-mix(in oklab, var(--border) 70%, transparent);
   }
 }
