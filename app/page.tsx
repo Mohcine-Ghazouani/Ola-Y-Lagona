@@ -64,8 +64,46 @@ export default function HomePage() {
       <Navigation />
 
       {/* Hero Section */}
-      <section className="relative  from-primary/10 via-background to-secondary/10 py-4 lg:py-8">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <section className="relative overflow-hidden py-4 lg:py-8">
+        {/* Blurred Background Image */}
+        <div className="absolute inset-0 z-0">
+          {isLoading ? (
+            <div className="w-full h-full bg-muted" />
+          ) : (
+            <>
+              {gallery.length > 0 ? (
+                <>
+                  {gallery.map((item, index) => (
+                    <div
+                      key={item.id}
+                      className={`absolute inset-0 transition-opacity duration-1000 ease-in-out ${
+                        index === currentImageIndex ? "opacity-100" : "opacity-0"
+                      }`}
+                    >
+                      <img
+                        src={item.imageUrl}
+                        alt={item.title}
+                        className="w-full h-full object-cover scale-110 blur-md brightness-75"
+                        aria-hidden="true"
+                      />
+                    </div>
+                  ))}
+                </>
+              ) : (
+                <img
+                  src="/kitesurfing-1.jpg"
+                  alt=""
+                  className="w-full h-full object-cover scale-110 blur-md brightness-75"
+                  aria-hidden="true"
+                />
+              )}
+            </>
+          )}
+          {/* Dark overlay for better text readability */}
+          <div className="absolute inset-0 bg-background/60 backdrop-blur-sm" />
+        </div>
+
+        <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid lg:grid-cols-2 gap-12 items-center">
             <div className="space-y-8">
               <div className="space-y-4">
@@ -108,7 +146,7 @@ export default function HomePage() {
             </div>
 
             <div className="space-y-6">
-              <div className="relative h-[400px] md:h-[500px] lg:h-[600px] overflow-hidden rounded-lg shadow-2xl">
+              <div className="relative h-[400px] md:h-[500px] lg:h-[600px] overflow-hidden rounded-lg shadow-2xl z-10">
                 {isLoading ? (
                   <div className="w-full h-full bg-muted animate-pulse flex items-center justify-center">
                     <span className="text-muted-foreground">Loading gallery...</span>
