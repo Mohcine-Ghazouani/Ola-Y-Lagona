@@ -1,5 +1,5 @@
 "use client"
-
+import { motion } from "framer-motion"
 import { useState, useEffect, useRef } from "react"
 import { Navigation } from "@/components/navigation"
 import { Button } from "@/components/ui/button"
@@ -76,9 +76,8 @@ export default function HomePage() {
                   {gallery.map((item, index) => (
                     <div
                       key={item.id}
-                      className={`absolute inset-0 transition-opacity duration-1000 ease-in-out ${
-                        index === currentImageIndex ? "opacity-100" : "opacity-0"
-                      }`}
+                      className={`absolute inset-0 transition-opacity duration-1000 ease-in-out ${index === currentImageIndex ? "opacity-100" : "opacity-0"
+                        }`}
                     >
                       <img
                         src={item.imageUrl}
@@ -160,9 +159,8 @@ export default function HomePage() {
                             key={item.id}
                             src={item.imageUrl}
                             alt={item.title}
-                            className={`absolute inset-0 w-full h-full object-cover transition-opacity duration-1000 ease-in-out ${
-                              index === currentImageIndex ? "opacity-100 z-10" : "opacity-0 z-0"
-                            }`}
+                            className={`absolute inset-0 w-full h-full object-cover transition-opacity duration-1000 ease-in-out ${index === currentImageIndex ? "opacity-100 z-10" : "opacity-0 z-0"
+                              }`}
                             loading={index === 0 ? "eager" : "lazy"}
                           />
                         ))}
@@ -388,7 +386,9 @@ export default function HomePage() {
       </section>
 
       {/* Location & Contact */}
-      <section className="py-8">
+
+
+      {/* <section className="py-8">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid lg:grid-cols-2 gap-12 items-center">
             <div className="space-y-6">
@@ -437,6 +437,70 @@ export default function HomePage() {
               <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent rounded-lg"></div>
             </div>
           </div>
+        </div>
+      </section> */}
+
+
+      <section className="relative h-[90vh]  overflow-hidden py-8">
+        <video
+          autoPlay
+          loop
+          muted
+          playsInline
+          className="absolute inset-0 w-full h-full object-cover"
+        >
+          <source src="/videos/HERO VIDEO.mp4" type="video/mp4" />
+        </video>
+        <div className="absolute inset-0 bg-black/50 flex flex-col  justify-center  text-white p-6">
+
+          <motion.div
+            className="grid lg:grid-cols-2 gap-12 items-center"
+            initial={{ opacity: 0, y: 40 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 1, delay: 0.3 }}
+          >
+            <div className="space-y-6">
+              <div className="space-y-4">
+                <h2 className="text-3xl lg:text-4xl font-bold">Visit Us in Dakhla</h2>
+                <p className="text-xl text-muted-foreground">
+                  Located in Morocco's premier kite sports destination, our center offers easy access to both lagoon and
+                  ocean conditions.
+                </p>
+              </div>
+
+              <div className="space-y-4">
+                <div className="flex items-start gap-3">
+                  <MapPin className="h-5 w-5 text-primary mt-1" />
+                  <div>
+                    <h4 className="font-semibold">Location</h4>
+                    <p className="text-muted-foreground">Dakhla Lagoon, Morocco</p>
+                    <p className="text-sm text-muted-foreground">Perfect wind conditions year-round</p>
+                  </div>
+                </div>
+
+                <div className="flex items-start gap-3">
+                  <Phone className="h-5 w-5 text-primary mt-1" />
+                  <div>
+                    <h4 className="font-semibold">Phone</h4>
+                    <p className="text-muted-foreground">+212 528 93 XX XX</p>
+                  </div>
+                </div>
+
+                <div className="flex items-start gap-3">
+                  <Mail className="h-5 w-5 text-primary mt-1" />
+                  <div>
+                    <h4 className="font-semibold">Email</h4>
+                    <p className="text-muted-foreground">info@kitedakhla.com</p>
+                  </div>
+                </div>
+              </div>
+
+              <Link href="/contact">
+                <Button size="lg">Get In Touch</Button>
+              </Link>
+            </div>
+
+          </motion.div>
         </div>
       </section>
 
