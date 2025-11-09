@@ -161,14 +161,14 @@ export default function HomePage() {
                 role: "surf instructor Iko certificate level 2",
                 experience: "7+ years",
                 specialties: ["Kitesurfing"],
-                image: "/kite-buggy-instructor-portrait.webp",
+                image: "/instructor-AyoubDrissi.webp",
               },
               {
                 name: "Oussama Haddach",
                 role: "Kitesurf, wingfoil instructor IKO CERTIFICATE LEVEL 2",
                 experience: "3+ years",
                 specialties: ["Kitesurfing", "Wing Foil"],
-                image: "/kite-instructor-portrait.webp",
+                image: "/instructor-OussamaHaddach.webp",
               },
             ].map((member, index) => (
               <Card key={index} className="text-center">

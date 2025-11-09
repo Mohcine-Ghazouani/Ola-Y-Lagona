@@ -21,10 +21,9 @@ interface GalleryItem {
 const categories = [
   { value: "all", label: "All Photos" },
   { value: "KITESURFING", label: "Kitesurfing" },
-  { value: "KITE_BUGGY", label: "Kite Buggy" },
-  { value: "KITE_LANDBOARD", label: "Landboarding" },
-  { value: "PADDLEBOARD", label: "Paddleboard" },
-  { value: "CLIENTS", label: "Happy Clients" },
+  { value: "BUGGY", label: "Buggy" },
+  { value: "MOUNTAIN_BOARD", label: "Mountain Board" },
+  { value: "STANDUP_PADDLE", label: "Standup Paddle" },
 ]
 
 export default function GalleryPage() {

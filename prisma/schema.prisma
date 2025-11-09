@@ -114,10 +114,9 @@ enum Role {
 
 enum GalleryCategory {
   KITESURFING     @map("kitesurfing")
-  KITE_BUGGY      @map("kite_buggy")
-  KITE_LANDBOARD  @map("kite_landboard")
-  PADDLEBOARD     @map("paddleboard")
-  CLIENTS         @map("clients")
+  BUGGY           @map("buggy")
+  MOUNTAIN_BOARD  @map("MOUNTAIN_BOARD")
+  STANDUP_PADDLE  @map("STANDUP_PADDLE")
 }
 
 enum ContactStatus {
