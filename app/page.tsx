@@ -1,3 +1,6 @@
+"use client"
+
+import { useState, useEffect, useRef } from "react"
 import { Navigation } from "@/components/navigation"
 import { Button } from "@/components/ui/button"
 import WindguruOfficialEmbed from "@/components/WindguruOfficialEmbed";
@@ -6,7 +9,56 @@ import { Badge } from "@/components/ui/badge"
 import Link from "next/link"
 import { Wind, Users, MapPin, Star, Award, Shield, Clock, Phone, Mail } from "lucide-react"
 
+interface GalleryItem {
+  id: number
+  title: string
+  description: string | null
+  imageUrl: string
+  category: string
+  isFeatured: boolean
+}
+
 export default function HomePage() {
+  const [gallery, setGallery] = useState<GalleryItem[]>([])
+  const [currentImageIndex, setCurrentImageIndex] = useState(0)
+  const [isLoading, setIsLoading] = useState(true)
+  const intervalRef = useRef<NodeJS.Timeout | null>(null)
+
+  useEffect(() => {
+    fetchGallery()
+  }, [])
+
+  useEffect(() => {
+    if (gallery.length > 0) {
+      // Start auto-cycling through images every 4 seconds
+      intervalRef.current = setInterval(() => {
+        setCurrentImageIndex((prev) => (prev + 1) % gallery.length)
+      }, 4000)
+
+      return () => {
+        if (intervalRef.current) {
+          clearInterval(intervalRef.current)
+        }
+      }
+    }
+  }, [gallery])
+
+  const fetchGallery = async () => {
+    try {
+      setIsLoading(true)
+      const response = await fetch("/api/gallery?category=all")
+      if (!response.ok) throw new Error("Failed to fetch gallery")
+      const data = await response.json()
+      setGallery(data.gallery || [])
+    } catch (err) {
+      console.error("Failed to fetch gallery:", err)
+    } finally {
+      setIsLoading(false)
+    }
+  }
+
+  const fallbackImage = "/kitesurfing-in-dakhla.jpg"
+
   return (
     <div className="min-h-screen bg-background">
       <Navigation />
@@ -56,13 +108,43 @@ export default function HomePage() {
             </div>
 
             <div className="space-y-6">
-              <div className="relative">
-                <img
-                  src="/kitesurfing-in-dakhla.jpg"
-                  alt="Kitesurfing in Dakhla"
-                  className="rounded-lg shadow-2xl w-full"
-                />
-                <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent rounded-lg"></div>
+              <div className="relative h-[400px] md:h-[500px] lg:h-[600px] overflow-hidden rounded-lg shadow-2xl">
+                {isLoading ? (
+                  <div className="w-full h-full bg-muted animate-pulse flex items-center justify-center">
+                    <span className="text-muted-foreground">Loading gallery...</span>
+                  </div>
+                ) : (
+                  <>
+                    {gallery.length > 0 ? (
+                      <>
+                        {gallery.map((item, index) => (
+                          <img
+                            key={item.id}
+                            src={item.imageUrl}
+                            alt={item.title}
+                            className={`absolute inset-0 w-full h-full object-cover transition-opacity duration-1000 ease-in-out ${
+                              index === currentImageIndex ? "opacity-100 z-10" : "opacity-0 z-0"
+                            }`}
+                            loading={index === 0 ? "eager" : "lazy"}
+                          />
+                        ))}
+                        {/* Image counter indicator */}
+                        {gallery.length > 1 && (
+                          <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2 bg-black/60 backdrop-blur-sm text-white px-4 py-2 rounded-full text-sm font-medium z-20">
+                            {currentImageIndex + 1} / {gallery.length}
+                          </div>
+                        )}
+                      </>
+                    ) : (
+                      <img
+                        src={fallbackImage}
+                        alt="Kitesurfing in Dakhla"
+                        className="w-full h-full object-cover"
+                      />
+                    )}
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent rounded-lg z-10"></div>
+                  </>
+                )}
               </div>
             </div>
           </div>
