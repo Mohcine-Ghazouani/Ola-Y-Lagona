@@ -102,9 +102,16 @@ export default function HomePage() {
           <div className="absolute inset-0 bg-background/60 backdrop-blur-sm" />
         </div>
 
+
         <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="grid lg:grid-cols-2 gap-12 items-center">
-            <div className="space-y-8">
+            <motion.div
+              className="space-y-8"
+              initial={{ opacity: 0, y: 40 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 1, delay: 0.3 }}
+            >
+
               <div className="space-y-4">
                 <Badge variant="secondary" className="w-fit">
                   <MapPin className="h-3 w-3 mr-1" />
@@ -142,7 +149,8 @@ export default function HomePage() {
                   <span className="text-sm font-medium">Safety First</span>
                 </div>
               </div>
-            </div>
+
+            </motion.div>
 
             <div className="space-y-6">
               <div className="relative h-[400px] md:h-[500px] lg:h-[600px] overflow-hidden rounded-lg shadow-2xl z-10">
@@ -441,8 +449,83 @@ export default function HomePage() {
       </section> */}
 
 
+
+
+
+      {/* <section className="relative h-[90vh]  overflow-hidden py-8">
+        <video
+          autoPlay
+          loop
+          muted
+          playsInline
+          className="absolute inset-0 w-full h-full object-cover"
+        >
+          <source src="/videos/HERO VIDEO.mp4" type="video/mp4" />
+        </video>
+        <div className="absolute inset-0 bg-black/50 flex flex-col  justify-center  text-white p-6">
+
+
+          
+          <div className="absolute inset-0 flex items-end sm:items-center">
+            <div
+              className="
+            w-full max-w-[90%] sm:max-w-lg
+            px-4 sm:px-6 lg:px-8
+            pb-4 sm:py-8
+            text-white
+          "
+            >
+              <h2 className="text-2xl sm:text-3xl lg:text-5xl font-extrabold leading-tight">
+                Visit Us in <span className="text-sky-400">Dakhla</span>
+              </h2>
+
+              <p className="mt-2 sm:mt-4 text-sm sm:text-base lg:text-lg text-white/85">
+                Located in Morocco&apos;s premier kite sports destination, our center offers easy
+                access to both lagoon and ocean conditions.
+              </p>
+
+              
+              <div className="mt-4 sm:mt-6 space-y-3 sm:space-y-4">
+                <div className="flex items-start gap-2 sm:gap-3">
+                  <MapPin className="h-4 w-4 sm:h-5 sm:w-5 text-sky-400 mt-0.5" />
+                  <div>
+                    <h4 className="font-semibold text-sm sm:text-base">Location</h4>
+                    <p className="text-white/80 text-xs sm:text-sm">Dakhla Lagoon, Morocco</p>
+                    <p className="text-white/70 text-xs">Perfect wind conditions year-round</p>
+                  </div>
+                </div>
+
+                <div className="flex items-start gap-2 sm:gap-3">
+                  <Phone className="h-4 w-4 sm:h-5 sm:w-5 text-sky-400 mt-0.5" />
+                  <div>
+                    <h4 className="font-semibold text-sm sm:text-base">Phone</h4>
+                    <p className="text-white/80 text-xs sm:text-sm">+212 528 93 XX XX</p>
+                  </div>
+                </div>
+
+                <div className="flex items-start gap-2 sm:gap-3">
+                  <Mail className="h-4 w-4 sm:h-5 sm:w-5 text-sky-400 mt-0.5" />
+                  <div>
+                    <h4 className="font-semibold text-sm sm:text-base">Email</h4>
+                    <p className="text-white/80 text-xs sm:text-sm">info@kitedakhla.com</p>
+                  </div>
+                </div>
+              </div>
+
+             
+              <div className="mt-5 sm:mt-8 flex flex-col sm:flex-row gap-3 sm:gap-4">
+                <Link href="/contact" className="w-full sm:w-auto">
+                  <Button size="lg" className="w-full sm:w-auto">Get In Touch</Button>
+                </Link>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section> */}
+
+
       <section className="relative w-full h-[90vh] overflow-hidden">
-        {/* 1) Blurred background video to fill empty edges */}
+        {/* blurred bg video fills edges */}
         <video
           autoPlay
           loop
@@ -453,86 +536,93 @@ export default function HomePage() {
           <source src="/videos/HERO VIDEO.mp4" type="video/mp4" />
         </video>
 
-        {/* 2) Centered video card */}
-        <div className="absolute inset-0 grid place-items-center px-4">
-          <div className="relative w-7xl aspect-[16/9] rounded-xl overflow-hidden shadow-2xl ring-1 ring-white/10">
-            {/* Foreground video (kept intact, no crop) */}
+        {/* centered card: tall on mobile, 16:9 on ≥sm */}
+        <div className="absolute inset-0 grid place-items-center px-3 sm:px-4">
+          <div
+            className="
+        relative w-full max-w-[1200px]
+        h-[86vh] sm:h-auto
+        aspect-auto sm:aspect-video
+        rounded-xl overflow-hidden shadow-2xl ring-1 ring-white/10
+      "
+          >
+            {/* foreground video (kept intact) */}
             <video
               autoPlay
               loop
               muted
               playsInline
-              className="absolute inset-0 w-full h-full object-contain"
+              className="absolute inset-0 "
             >
               <source src="/videos/HERO VIDEO.mp4" type="video/mp4" />
             </video>
 
-            {/* Soft gradient so text is readable (left -> transparent) */}
-            <div className="absolute inset-0 bg-gradient-to-r from-black/65 via-black/45 to-transparent" />
+            {/* readability gradient (so text pops) */}
+            <div className="absolute inset-0 bg-gradient-to-r from-black/70 via-black/45 to-transparent sm:from-black/60" />
 
-            {/* 3) Your text OVER the video (left side) */}
-            
-              <motion.div
-            className="absolute inset-0 flex items-center"
-            initial={{ opacity: 0, y: 40 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 1, delay: 0.3 }}
-          >
-
-          
-              <div className="px-6 sm:px-10 lg:px-14 py-8 max-w-xl text-white">
-
-
-                <h2 className="mt-5 text-3xl lg:text-5xl font-extrabold leading-tight">
+            {/* text over the video */}
+            <div className="absolute inset-0 flex items-end sm:items-center">
+              <div
+                className="
+            w-full max-w-[90%] sm:max-w-lg
+            px-4 sm:px-6 lg:px-8
+            pb-4 sm:py-8
+            text-white
+          "
+              >
+                <h2 className="text-2xl sm:text-3xl lg:text-5xl font-extrabold leading-tight">
                   Visit Us in <span className="text-sky-400">Dakhla</span>
                 </h2>
 
-                <p className="mt-4 text-base lg:text-lg text-white/85">
-                  Located in Morocco's premier kite sports destination, our center offers easy
+                <p className="mt-2 sm:mt-4 text-sm sm:text-base lg:text-lg text-white/85">
+                  Located in Morocco&apos;s premier kite sports destination, our center offers easy
                   access to both lagoon and ocean conditions.
                 </p>
 
-                {/* Details / bullets */}
-                <div className="mt-6 space-y-4">
-                  <div className="flex items-start gap-3">
-                    <MapPin className="h-5 w-5 text-sky-400 mt-1" />
+                {/* bullets */}
+                <div className="mt-4 sm:mt-6 space-y-3 sm:space-y-4">
+                  <div className="flex items-start gap-2 sm:gap-3">
+                    <MapPin className="h-4 w-4 sm:h-5 sm:w-5 text-sky-400 mt-0.5" />
                     <div>
-                      <h4 className="font-semibold">Location</h4>
-                      <p className="text-white/80">Dakhla Lagoon, Morocco</p>
-                      <p className="text-sm text-white/70">Perfect wind conditions year-round</p>
+                      <h4 className="font-semibold text-sm sm:text-base">Location :</h4>
+                      <p className="text-white/80 text-xs sm:text-sm">Lagoon</p>
+                      <p className="text-white/80 text-xs sm:text-sm">Speed spot</p>
+                      <p className="text-white/80 text-xs sm:text-sm">White dune</p>
+                      <p className="text-white/70 text-xs">Dakhla Morocco, Perfect wind conditions year-round</p>
                     </div>
                   </div>
 
-                  <div className="flex items-start gap-3">
-                    <Phone className="h-5 w-5 text-sky-400 mt-1" />
+                  <div className="flex items-start gap-2 sm:gap-3">
+                    <Phone className="h-4 w-4 sm:h-5 sm:w-5 text-sky-400 mt-0.5" />
                     <div>
-                      <h4 className="font-semibold">Phone</h4>
-                      <p className="text-white/80">+212 528 93 XX XX</p>
+                      <h4 className="font-semibold text-sm sm:text-base">Phone :</h4>
+                      <p className="text-white/80 text-xs sm:text-sm">+212 528 93 XX XX</p>
                     </div>
                   </div>
 
-                  <div className="flex items-start gap-3">
-                    <Mail className="h-5 w-5 text-sky-400 mt-1" />
+                  <div className="flex items-start gap-2 sm:gap-3">
+                    <Mail className="h-4 w-4 sm:h-5 sm:w-5 text-sky-400 mt-0.5" />
                     <div>
-                      <h4 className="font-semibold">Email</h4>
-                      <p className="text-white/80">info@kitedakhla.com</p>
+                      <h4 className="font-semibold text-sm sm:text-base">Email :</h4>
+                      <p className="text-white/80 text-xs sm:text-sm">info@kitedakhla.com</p>
                     </div>
                   </div>
                 </div>
 
-                {/* CTAs */}
-                <div className="mt-8 flex flex-wrap items-center gap-4">
-                  <Link href="/contact">
-                    <Button size="lg">Get In Touch</Button>
+                {/* CTA: full-width on mobile */}
+                <div className="mt-5 sm:mt-8 flex flex-col sm:flex-row gap-3 sm:gap-4">
+                  <Link href="/contact" className="w-full sm:w-auto">
+                    <Button size="lg" className="w-full sm:w-auto">Get In Touch</Button>
                   </Link>
                 </div>
               </div>
-            </motion.div>
+            </div>
+
 
           </div>
         </div>
-
       </section>
+
 
 
       {/* Footer */}
@@ -541,7 +631,7 @@ export default function HomePage() {
           <div className="grid md:grid-cols-4 gap-8">
             <div className="space-y-4">
               <div className="flex items-center space-x-2">
-                <Wind className="h-6 w-6 text-primary" />
+                <img src="/logo.png" alt="Ola Y Lagona" className="h-8 w-8" />
                 <span className="font-bold text-lg">Ola Y Lagona</span>
               </div>
               <p className="text-muted-foreground text-sm">
@@ -580,7 +670,7 @@ export default function HomePage() {
             <div className="space-y-4">
               <h4 className="font-semibold">Contact Info</h4>
               <div className="space-y-2 text-sm text-muted-foreground">
-                <p>Dakhla Lagoon, Morocco</p>
+                <p>Dakhla: Lagoon, Speed spot, White dune</p>
                 <p>+212 528 93 XX XX</p>
                 <p>info@kitedakhla.com</p>
               </div>
