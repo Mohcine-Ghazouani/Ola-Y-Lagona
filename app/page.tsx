@@ -531,7 +531,7 @@ export default function HomePage() {
           loop
           muted
           playsInline
-          className="absolute inset-0 w-full h-full object-cover blur-md scale-110 opacity-70"
+          className="absolute inset-0 w-full h-full object-cover  scale-110 opacity-70"
         >
           <source src="/videos/HERO VIDEO.mp4" type="video/mp4" />
         </video>
@@ -554,22 +554,13 @@ export default function HomePage() {
               playsInline
               className="absolute inset-0 "
             >
-              <source src="/videos/HERO VIDEO.mp4" type="video/mp4" />
+
             </video>
 
-            {/* readability gradient (so text pops) */}
-            <div className="absolute inset-0 bg-gradient-to-r from-black/70 via-black/45 to-transparent sm:from-black/60" />
 
             {/* text over the video */}
             <div className="absolute inset-0 flex items-end sm:items-center">
-              <div
-                className="
-            w-full max-w-[90%] sm:max-w-lg
-            px-4 sm:px-6 lg:px-8
-            pb-4 sm:py-8
-            text-white
-          "
-              >
+              <div className="w-full sm:max-w-lg px-4 sm:px-6 lg:px-8 pb-4 sm:py-8 text-white">
                 <h2 className="text-2xl sm:text-3xl lg:text-5xl font-extrabold leading-tight">
                   Visit Us in <span className="text-sky-400">Dakhla</span>
                 </h2>
@@ -585,9 +576,7 @@ export default function HomePage() {
                     <MapPin className="h-4 w-4 sm:h-5 sm:w-5 text-sky-400 mt-0.5" />
                     <div>
                       <h4 className="font-semibold text-sm sm:text-base">Location :</h4>
-                      <p className="text-white/80 text-xs sm:text-sm">Lagoon</p>
-                      <p className="text-white/80 text-xs sm:text-sm">Speed spot</p>
-                      <p className="text-white/80 text-xs sm:text-sm">White dune</p>
+                      <p className="text-white/80 text-xs sm:text-sm">Lagoon, Speed spot, White dune</p>
                       <p className="text-white/70 text-xs">Dakhla Morocco, Perfect wind conditions year-round</p>
                     </div>
                   </div>
@@ -610,7 +599,7 @@ export default function HomePage() {
                 </div>
 
                 {/* CTA: full-width on mobile */}
-                <div className="mt-5 sm:mt-8 flex flex-col sm:flex-row gap-3 sm:gap-4">
+                <div className="mt-4 sm:mt-6 flex flex-col sm:flex-row gap-3 sm:gap-4">
                   <Link href="/contact" className="w-full sm:w-auto">
                     <Button size="lg" className="w-full sm:w-auto">Get In Touch</Button>
                   </Link>
